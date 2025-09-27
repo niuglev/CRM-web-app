@@ -1,0 +1,21 @@
+:root {
+  /* Brand & Primary */
+  --color-professional-blue: #2563eb; /* основной брендовый цвет: кнопки, ссылки, заголовки */
+  --color-deep-navy: #1e40af;        /* тёмный акцент: навигация, важные элементы */
+  --color-light-blue: #dbeafe;       /* светлый акцент: фоны, выделения */
+
+  /* Semantic */
+  --color-success-green: #16a34a;    /* успехи, подтверждения, рост */
+  --color-warm-orange: #ea580c;      /* предупреждения, важные уведомления */
+  --color-soft-red: #dc2626;         /* ошибки, критические статусы */
+  --color-soft-purple: #8b5cf6;      /* акцент, метки */
+
+  /* Text */
+  --color-charcoal: #374151;         /* основной текст */
+  --color-medium-gray: #6b7280;      /* вторичный текст */
+
+  /* Backgrounds & Borders */
+  --color-light-gray: #e5e7eb;       /* границы, разделители */
+  --color-soft-background: #f9fafb;  /* мягкий фон */
+  --color-pure-white: #ffffff;       /* белый фон */
+}
