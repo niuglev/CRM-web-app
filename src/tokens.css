@@ -1,0 +1,39 @@
+:root {
+  /* ===========================
+     🎨 Colors
+  ============================ */
+
+  /* Brand */
+  --color-professional-blue: #2563eb; /* основной брендовый цвет */
+  --color-deep-navy: #1e40af;        /* тёмный акцент */
+  --color-light-blue: #dbeafe;       /* светлый акцент */
+
+  /* Semantic */
+  --color-success-green: #16a34a;    /* успехи */
+  --color-warm-orange: #ea580c;      /* предупреждения */
+  --color-soft-red: #dc2626;         /* ошибки */
+  --color-soft-purple: #8b5cf6;      /* акцент, метки */
+
+  /* Text */
+  --color-charcoal: #374151;         /* основной текст */
+  --color-medium-gray: #6b7280;      /* вторичный текст */
+
+  /* Backgrounds & Borders */
+  --color-light-gray: #e5e7eb;       /* границы, разделители */
+  --color-soft-background: #f9fafb;  /* мягкий фон */
+  --color-pure-white: #ffffff;       /* белый фон */
+
+  /* ===========================
+     ✍️ Typography
+  ============================ */
+
+  --font-sans: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-serif: 'Merriweather', Georgia, serif;
+  --font-mono: 'Fira Code', monospace;
+
+  /* Recommended usage */
+  --font-heading: var(--font-sans);  /* заголовки */
+  --font-body: var(--font-sans);     /* основной текст */
+  --font-accent: var(--font-serif);  /* акцентные элементы */
+  --font-code: var(--font-mono);     /* технический текст / код */
+}
