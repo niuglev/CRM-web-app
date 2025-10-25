@@ -1,73 +1,84 @@
-# React + TypeScript + Vite
+# PK-CRM
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Современная CRM система, построенная на React + TypeScript + SASS.
 
-Currently, two official plugins are available:
+## Особенности
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🎨 Современный и чистый дизайн
+- 📱 Адаптивная верстка
+- 🔍 Поиск клиентов и заказов
+- 👥 Управление исполнителями
+- 📊 Статистика и аналитика
+- ⚙️ Настройки системы
 
-## React Compiler
+## Технологии
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **React 19** - библиотека для создания пользовательских интерфейсов
+- **TypeScript** - типизированный JavaScript
+- **SASS** - препроцессор CSS
+- **React Icons** - иконки
+- **Vite** - быстрый сборщик
 
-## Expanding the ESLint configuration
+## Установка и запуск
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Установите зависимости:
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Запустите проект в режиме разработки:
+```bash
+npm run dev
+```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+3. Откройте браузер и перейдите по адресу `http://localhost:5173`
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Структура проекта
+
+```
+src/
+├── components/          # React компоненты
+│   ├── Header.tsx      # Шапка с поиском и пользователем
+│   ├── Sidebar.tsx     # Боковая навигация
+│   ├── ExecutorsTable.tsx # Таблица исполнителей
+│   └── ExecutorsPage.tsx  # Главная страница
+├── types/              # TypeScript типы
+└── App.tsx            # Главный компонент
+```
+
+## Компоненты
+
+### Header
+- Логотип системы
+- Поиск клиентов и заказов
+- Уведомления
+- Профиль пользователя
+
+### Sidebar
+- Навигационное меню
+- Активные элементы
+- Счетчики (например, количество заказов)
+
+### ExecutorsTable
+- Таблица с данными исполнителей
+- Действия (редактирование, просмотр)
+- Фильтры (корпоративные/частные)
+
+## Стилизация
+
+Проект использует SASS для стилизации с модульным подходом:
+- Каждый компонент имеет свой `.scss` файл
+- Используются переменные и миксины
+- Адаптивный дизайн для мобильных устройств
+
+## Разработка
+
+Для сборки проекта:
+```bash
+npm run build
+```
+
+Для проверки кода:
+```bash
+npm run lint
 ```
