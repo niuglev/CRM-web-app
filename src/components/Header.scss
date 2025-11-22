@@ -1,24 +1,28 @@
 .header {
-  background: white;
-  border-bottom: 1px solid #e5e5e5;
+  background: var(--color-pure-white);
+  border-bottom: 1px solid var(--color-light-gray);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
 
-  &__top {
-    padding: 8px 24px;
-    background: #f8f9fa;
-    border-bottom: 1px solid #e5e5e5;
+  &--scrolled {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
-  &__version {
-    font-size: 12px;
-    color: #666;
+  &--hidden {
+    transform: translateY(-100%);
   }
 
   &__main {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 24px;
-    height: 64px;
+    padding: 2vh 3vw;
+    height: 8vh;
   }
 
   &__left {
@@ -27,8 +31,9 @@
 
   &__logo {
     font-size: 24px;
-    font-weight: bold;
-    color: #333;
+    font-weight: 700;
+    font-family: var(--font-heading);
+    color: var(--color-charcoal);
     margin: 0;
   }
 
@@ -51,7 +56,7 @@
     left: 12px;
     top: 50%;
     transform: translateY(-50%);
-    color: #999;
+    color: var(--color-medium-gray);
     font-size: 16px;
   }
 
@@ -59,21 +64,23 @@
     width: 100%;
     height: 40px;
     padding: 0 12px 0 40px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-light-gray);
     border-radius: 8px;
     font-size: 14px;
-    background: #f8f9fa;
+    font-family: var(--font-body);
+    background: var(--color-soft-background);
+    color: var(--color-charcoal);
     transition: all 0.2s ease;
 
     &:focus {
       outline: none;
-      border-color: #4a90e2;
-      background: white;
-      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+      border-color: var(--color-professional-blue);
+      background: var(--color-pure-white);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
     &::placeholder {
-      color: #999;
+      color: var(--color-medium-gray);
     }
   }
 
@@ -86,12 +93,12 @@
 
   &__bell {
     font-size: 20px;
-    color: #666;
+    color: var(--color-medium-gray);
     cursor: pointer;
     transition: color 0.2s ease;
 
     &:hover {
-      color: #4a90e2;
+      color: var(--color-professional-blue);
     }
   }
 
@@ -105,7 +112,7 @@
     transition: background-color 0.2s ease;
 
     &:hover {
-      background-color: #f8f9fa;
+      background-color: var(--color-soft-background);
     }
   }
 
@@ -113,23 +120,26 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: #4a90e2;
-    color: white;
+    background: var(--color-professional-blue);
+    color: var(--color-pure-white);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 12px;
-    font-weight: bold;
+    font-weight: 600;
+    font-family: var(--font-body);
   }
 
   &__user-name {
     font-size: 14px;
-    color: #333;
+    font-family: var(--font-body);
+    color: var(--color-charcoal);
     font-weight: 500;
   }
 
   &__user-chevron {
     font-size: 14px;
-    color: #666;
+    color: var(--color-medium-gray);
   }
 }
+

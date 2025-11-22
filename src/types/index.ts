@@ -5,6 +5,25 @@ export interface Executor {
   comments: string;
 }
 
+export interface Client {
+  id: string;
+  name: string;
+  contacts: string;
+  comments: string;
+}
+
+export interface Order {
+  id: string;
+  date: string;
+  time: string;
+  customerName: string;
+  customerId: string;
+  description: string;
+  address: string;
+  executorName: string;
+  executorId: string;
+}
+
 export interface User {
   name: string;
   initials: string;
@@ -17,3 +36,4 @@ export interface MenuItem {
   badge?: number;
   isActive?: boolean;
 }
+

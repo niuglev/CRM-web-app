@@ -1,8 +1,8 @@
-import ExecutorsPage from './components/ExecutorsPage'
+import MainPage from './components/ExecutorsPage'
 import './App.css'
 
 function App() {
-  return <ExecutorsPage />
+  return <MainPage />
 }
 
 export default App

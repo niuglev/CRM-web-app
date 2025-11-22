@@ -1,18 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FiSearch, FiBell, FiChevronDown } from 'react-icons/fi';
 import './Header.scss';
 
-interface HeaderProps {
+export interface HeaderProps {
   userName: string;
   userInitials: string;
+  isVisible?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ userName, userInitials }) => {
+const Header: React.FC<HeaderProps> = ({ userName, userInitials, isVisible = true }) => {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    // Проверяем начальную позицию скролла
+    const checkScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    
+    checkScroll();
+    window.addEventListener('scroll', checkScroll, { passive: true });
+    return () => window.removeEventListener('scroll', checkScroll);
+  }, []);
+
   return (
-    <header className="header">
-      <div className="header__top">
-        <span className="header__version">Desktop - Employee v.01</span>
-      </div>
+    <header className={`header ${isScrolled ? 'header--scrolled' : ''} ${!isVisible ? 'header--hidden' : ''}`}>
       <div className="header__main">
         <div className="header__left">
           <h1 className="header__logo">KP-CRM</h1>
@@ -43,3 +54,4 @@ const Header: React.FC<HeaderProps> = ({ userName, userInitials }) => {
 };
 
 export default Header;
+

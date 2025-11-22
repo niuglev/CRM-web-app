@@ -1,4 +1,4 @@
-.executors-table {
+.orders-table {
   background: var(--color-pure-white);
   border-radius: 12px;
   overflow: hidden;
@@ -11,15 +11,15 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 32px 32px 24px;
+    padding: 4vh 3vw 3vh;
     border-bottom: 1px solid var(--color-light-gray);
-    gap: 24px;
+    gap: 3vw;
     flex-wrap: wrap;
   }
 
   &__title {
     font-family: var(--font-heading);
-    font-size: 28px;
+    font-size: 3.5vh;
     font-weight: 700;
     color: var(--color-charcoal);
     margin: 0;
@@ -29,7 +29,7 @@
   &__header-actions {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 2vw;
     flex: 1;
     justify-content: flex-end;
     flex-wrap: wrap;
@@ -37,26 +37,26 @@
 
   &__search {
     position: relative;
-    min-width: 280px;
+    min-width: 20vw;
     flex: 0 1 auto;
 
     &-icon {
       position: absolute;
-      left: 14px;
+      left: 1.5vh;
       top: 50%;
       transform: translateY(-50%);
       color: var(--color-medium-gray);
-      font-size: 18px;
+      font-size: 2.2vh;
       pointer-events: none;
     }
 
     &-input {
       width: 100%;
-      height: 40px;
-      padding: 0 14px 0 42px;
+      height: 5vh;
+      padding: 0 1.5vh 0 5vh;
       border: 1px solid var(--color-light-gray);
-      border-radius: 8px;
-      font-size: 14px;
+      border-radius: 1vh;
+      font-size: 1.75vh;
       font-family: var(--font-body);
       background: var(--color-soft-background);
       color: var(--color-charcoal);
@@ -66,7 +66,7 @@
         outline: none;
         border-color: var(--color-professional-blue);
         background: var(--color-pure-white);
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        box-shadow: 0 0 0 0.4vh rgba(37, 99, 235, 0.1);
       }
 
       &::placeholder {
@@ -78,11 +78,11 @@
   &__btn {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
+    gap: 1vh;
+    padding: 1.25vh 2.5vw;
     border: none;
-    border-radius: 8px;
-    font-size: 14px;
+    border-radius: 1vh;
+    font-size: 1.75vh;
     font-weight: 600;
     font-family: var(--font-body);
     cursor: pointer;
@@ -96,7 +96,7 @@
       &:hover {
         background: var(--color-deep-navy);
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        box-shadow: 0 0.5vh 1.5vh rgba(37, 99, 235, 0.3);
       }
 
       &:active {
@@ -105,45 +105,8 @@
     }
 
     &-icon {
-      font-size: 18px;
+      font-size: 2.2vh;
       stroke-width: 2.5;
-    }
-  }
-
-  &__filters {
-    display: flex;
-    padding: 0 32px;
-    gap: 8px;
-    border-bottom: 1px solid var(--color-light-gray);
-    background: var(--color-soft-background);
-    min-height: 52px;
-    align-items: center;
-  }
-
-  &__filter {
-    padding: 8px 20px;
-    border: none;
-    background: transparent;
-    color: var(--color-medium-gray);
-    font-size: 12px;
-    font-weight: 600;
-    font-family: var(--font-body);
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-    position: relative;
-
-    &:hover:not(&--active) {
-      background: rgba(55, 65, 81, 0.05);
-      color: var(--color-charcoal);
-    }
-
-    &--active {
-      background: var(--color-professional-blue);
-      color: var(--color-pure-white);
-      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
     }
   }
 
@@ -163,21 +126,16 @@
   }
 
   &__header-cell {
-    padding: 16px 32px;
+    padding: 2vh 3vw;
     text-align: left;
-    font-size: 11px;
+    font-size: 1.4vh;
     font-weight: 600;
     font-family: var(--font-body);
     color: var(--color-medium-gray);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.12vh;
     border-bottom: 2px solid var(--color-light-gray);
     white-space: nowrap;
-
-    &--actions {
-      text-align: center;
-      width: 120px;
-    }
   }
 
   &__row {
@@ -204,100 +162,69 @@
   }
 
   &__cell {
-    padding: 20px 32px;
+    padding: 2.5vh 3vw;
     vertical-align: middle;
-
-    &--actions {
-      text-align: center;
-    }
   }
 
-  &__name {
-    &-text {
-      font-size: 15px;
-      font-weight: 600;
-      font-family: var(--font-body);
-      color: var(--color-charcoal);
-      margin-bottom: 6px;
-      line-height: 1.4;
-    }
-
-    &-id {
-      font-size: 12px;
-      font-weight: 400;
-      font-family: var(--font-body);
-      color: var(--color-medium-gray);
-      letter-spacing: 0.3px;
-    }
+  &__order-number {
+    font-size: 1.9vh;
+    font-weight: 600;
+    font-family: var(--font-body);
+    color: var(--color-charcoal);
   }
 
-  &__contacts {
-    font-size: 14px;
+  &__datetime {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5vh;
+    font-size: 1.75vh;
+    color: var(--color-charcoal);
+  }
+
+  &__person {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5vh;
+  }
+
+  &__person-name {
+    font-size: 1.9vh;
+    font-weight: 600;
+    color: var(--color-charcoal);
+  }
+
+  &__person-id {
+    font-size: 1.5vh;
+    color: var(--color-charcoal);
+  }
+
+  &__description,
+  &__address {
+    font-size: 1.75vh;
     font-family: var(--font-body);
     color: var(--color-charcoal);
     line-height: 1.5;
-    word-break: break-word;
-  }
-
-  &__comments {
-    font-size: 14px;
-    font-family: var(--font-body);
-    color: var(--color-charcoal);
-    line-height: 1.5;
-    max-width: 400px;
+    max-width: 50vw;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  &__actions-cell {
-    display: flex;
-    gap: 4px;
-    justify-content: center;
-    align-items: center;
-  }
-
-  &__action-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border: none;
-    background: transparent;
-    color: var(--color-medium-gray);
-    cursor: pointer;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-    font-size: 18px;
-
-    &:hover {
-      background: var(--color-light-gray);
-      color: var(--color-professional-blue);
-      transform: scale(1.1);
-    }
-
-    &:active {
-      transform: scale(0.95);
-    }
-  }
-
   &__empty {
     text-align: center;
-    padding: 60px 32px;
+    padding: 7.5vh 3vw;
   }
 
   &__empty-message {
-    font-size: 16px;
+    font-size: 2vh;
     font-family: var(--font-body);
     color: var(--color-medium-gray);
     font-weight: 500;
   }
 }
 
-// Адаптивность
 @media (max-width: 1024px) {
-  .executors-table {
+  .orders-table {
     &__header {
       flex-direction: column;
       align-items: stretch;
@@ -321,26 +248,23 @@
 }
 
 @media (max-width: 768px) {
-  .executors-table {
+  .orders-table {
     &__header {
-      padding: 24px 20px 20px;
+      padding: 3vh 2.5vw 2.5vh;
     }
 
     &__title {
-      font-size: 24px;
+      font-size: 3vh;
     }
 
     &__header-cell,
     &__cell {
-      padding: 12px 16px;
+      padding: 1.5vh 2vw;
     }
 
-    &__filters {
-      padding: 0 20px;
-    }
-
-    &__comments {
-      max-width: 200px;
+    &__description,
+    &__address {
+      max-width: 25vw;
     }
   }
 }

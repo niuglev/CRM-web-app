@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import ExecutorsTable from './ExecutorsTable';
-import type { Executor } from '../types';
+import OrdersTable from './OrdersTable';
+import ClientsTable from './ClientsTable';
+import type { Executor, Client, Order } from '../types';
 import './ExecutorsPage.scss';
 
-const ExecutorsPage: React.FC = () => {
+const MainPage: React.FC = () => {
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const [activeMenuItem, setActiveMenuItem] = useState<string>('executors');
+  const mainContentRef = useRef<HTMLElement>(null);
+  const lastScrollY = useRef(0);
+
   // Моковые данные исполнителей
   const executors: Executor[] = [
     {
@@ -40,6 +48,88 @@ const ExecutorsPage: React.FC = () => {
     }
   ];
 
+  // Моковые данные клиентов
+  const clients: Client[] = [
+    {
+      id: '005-Компания 1',
+      name: 'Имя Фамилия',
+      contacts: '12041123-4587',
+      comments: 'Компания 1. Саконой Имя Фимания - продный чупак'
+    },
+    {
+      id: '001',
+      name: 'Имя Фамилия',
+      contacts: 'nsd391123-4567',
+      comments: 'Компания 1. Саконой Имя Фимания - продный чупак'
+    },
+    {
+      id: '002',
+      name: 'Имя Фамилия',
+      contacts: 'irya@mail.ru',
+      comments: 'Компания 1. Саконой Имя Фимания - продный чупак'
+    },
+    {
+      id: '003',
+      name: 'Имя Фамилия',
+      contacts: '139123-45602',
+      comments: 'Компания 1. Саконой Имя Фимания - продный чупак'
+    },
+    {
+      id: '004-Компания 2',
+      name: 'Имя Фамилия',
+      contacts: 'tg.usr01',
+      comments: 'Компания 1. Саконой Имя Фимания - продный чупак'
+    }
+  ];
+
+  // Моковые данные заказов
+  const orders: Order[] = [
+    {
+      id: 'ord-001',
+      date: '09.05.25',
+      time: '07:00',
+      customerName: 'Имя заказчика',
+      customerId: 'ID',
+      description: 'Первый заказ компании Урал',
+      address: 'г. Пушкино, ул. Колхозная, д. 42',
+      executorName: 'Имя Фамилия',
+      executorId: 'ID',
+    },
+    {
+      id: 'ord-002',
+      date: '10.05.25',
+      time: '13:30',
+      customerName: 'Имя заказчика',
+      customerId: 'ID',
+      description: 'Второй заказ компании Урал',
+      address: 'г. Екатеринбург, ул. Ленина, 10',
+      executorName: 'Имя Фамилия',
+      executorId: 'ID',
+    },
+    {
+      id: 'ord-003',
+      date: '12.05.25',
+      time: '09:15',
+      customerName: 'Имя заказчика',
+      customerId: 'ID',
+      description: 'Монтаж оборудования, этап 1',
+      address: 'г. Казань, ул. Советская, 7',
+      executorName: 'Имя Фамилия',
+      executorId: 'ID',
+    },
+    {
+      id: 'ord-004',
+      date: '15.05.25',
+      time: '16:45',
+      customerName: 'Имя заказчика',
+      customerId: 'ID',
+      description: 'Диагностика и обслуживание',
+      address: 'г. Пушкино, ул. Колхозная, д. 42',
+      executorName: 'Имя Фамилия',
+      executorId: 'ID',
+    },
+  ];
+
   const handleEditExecutor = (executor: Executor) => {
     console.log('Редактировать исполнителя:', executor);
     // Здесь будет логика редактирования
@@ -50,17 +140,74 @@ const ExecutorsPage: React.FC = () => {
     // Здесь будет логика просмотра
   };
 
+  const handleEditClient = (client: Client) => {
+    console.log('Редактировать клиента:', client);
+    // Здесь будет логика редактирования
+  };
+
+  const handleViewClient = (client: Client) => {
+    console.log('Просмотр клиента:', client);
+    // Здесь будет логика просмотра
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarCollapsed(!isSidebarCollapsed);
+  };
+
+  const handleMenuItemClick = (itemId: string) => {
+    setActiveMenuItem(itemId);
+  };
+
+  useEffect(() => {
+    const mainContent = mainContentRef.current;
+    if (!mainContent) return;
+
+    const handleScroll = () => {
+      const currentScrollY = mainContent.scrollTop;
+
+      // Скрываем header при прокрутке вниз, показываем при прокрутке вверх
+      if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+        setIsHeaderVisible(false);
+      } else {
+        setIsHeaderVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    mainContent.addEventListener('scroll', handleScroll, { passive: true });
+    return () => mainContent.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <div className="executors-page">
-      <Header userName="Имя Фамилия" userInitials="ИФ" />
+      <Header userName="Имя Фамилия" userInitials="ИФ" isVisible={isHeaderVisible} />
       <div className="executors-page__layout">
-        <Sidebar activeItem="executors" />
-        <main className="executors-page__main">
-          <ExecutorsTable 
-            executors={executors}
-            onEdit={handleEditExecutor}
-            onView={handleViewExecutor}
-          />
+        <Sidebar 
+          activeItem={activeMenuItem}
+          isCollapsed={isSidebarCollapsed}
+          onToggle={toggleSidebar}
+          onMenuItemClick={handleMenuItemClick}
+        />
+        <main 
+          ref={mainContentRef}
+          className={`executors-page__main ${isSidebarCollapsed ? 'executors-page__main--sidebar-collapsed' : ''}`}
+        >
+          {activeMenuItem === 'clients' ? (
+            <ClientsTable 
+              clients={clients}
+              onEdit={handleEditClient}
+              onView={handleViewClient}
+            />
+          ) : activeMenuItem === 'orders' ? (
+            <OrdersTable orders={orders} />
+          ) : activeMenuItem === 'executors' ? (
+            <ExecutorsTable 
+              executors={executors}
+              onEdit={handleEditExecutor}
+              onView={handleViewExecutor}
+            />
+          ) : null}
         </main>
       </div>
       <div className="executors-page__decoration">
@@ -74,4 +221,4 @@ const ExecutorsPage: React.FC = () => {
   );
 };
 
-export default ExecutorsPage;
+export default MainPage;
