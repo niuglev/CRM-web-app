@@ -1,0 +1,89 @@
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-pure-white);
+  border-top: 1px solid var(--color-light-gray);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 0;
+  z-index: 200;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  height: 64px;
+  max-height: 64px;
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border: none;
+    background: transparent;
+    color: var(--color-medium-gray);
+    cursor: pointer;
+    padding: 8px 12px;
+    position: relative;
+    flex: 1;
+    max-width: 80px;
+    transition: all 0.2s ease;
+    font-family: var(--font-body);
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &--active {
+      color: var(--color-professional-blue);
+
+      .bottom-nav__icon {
+        color: var(--color-professional-blue);
+      }
+
+      .bottom-nav__label {
+        color: var(--color-professional-blue);
+        font-weight: 600;
+      }
+    }
+  }
+
+  &__icon {
+    font-size: 20px;
+    color: var(--color-medium-gray);
+    transition: color 0.2s ease;
+  }
+
+  &__label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--color-medium-gray);
+    transition: color 0.2s ease;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  &__badge {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    background: var(--color-professional-blue);
+    color: var(--color-pure-white);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+    line-height: 1.2;
+  }
+}
+
+// Показать только на мобильных устройствах
+@media (min-width: 769px) {
+  .bottom-nav {
+    display: none;
+  }
+}
+

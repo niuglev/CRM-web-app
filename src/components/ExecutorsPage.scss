@@ -91,32 +91,35 @@
 
 @media (max-width: 768px) {
   .executors-page {
+    &--mobile {
+      .executors-page__main {
+        margin-left: 0;
+        margin-top: 0;
+        padding: 0;
+        min-height: 100vh;
+        overflow-y: auto;
+      }
+    }
+
     &__main {
       margin-left: 0;
       padding: 2vh 2vw;
       min-height: calc(100vh - 10vh);
+
+      &--mobile {
+        margin-left: 0;
+        margin-top: 0;
+        padding: 0;
+        min-height: 100vh;
+      }
     }
 
     &__decoration {
-      width: 20vw;
-      height: 30vh;
+      display: none;
     }
 
     &__circle {
-      &--1 {
-        width: 15vw;
-        height: 25vh;
-      }
-
-      &--2 {
-        width: 12vw;
-        height: 20vh;
-      }
-
-      &--3 {
-        width: 8vw;
-        height: 15vh;
-      }
+      display: none;
     }
   }
 }

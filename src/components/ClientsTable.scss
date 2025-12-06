@@ -320,30 +320,13 @@
   }
 }
 
+// Скрыть на мобильных устройствах
 @media (max-width: 768px) {
   .clients-table {
-    &__header {
-      padding: 3vh 2.5vw 2.5vh;
-    }
-
-    &__title {
-      font-size: 3vh;
-    }
-
-    &__header-cell,
-    &__cell {
-      padding: 1.5vh 2vw;
-    }
-
-    &__filters {
-      padding: 0 2.5vw;
-    }
-
-    &__comments {
-      max-width: 25vw;
-    }
+    display: none;
   }
 }
+
 
 
 

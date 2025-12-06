@@ -1,13 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
+import BottomNavigation from './BottomNavigation';
 import ExecutorsTable from './ExecutorsTable';
+import ExecutorsTableMobile from './ExecutorsTableMobile';
 import OrdersTable from './OrdersTable';
+import OrdersTableMobile from './OrdersTableMobile';
 import ClientsTable from './ClientsTable';
+import ClientsTableMobile from './ClientsTableMobile';
+import useMobile from '../hooks/useMobile';
 import type { Executor, Client, Order } from '../types';
 import './ExecutorsPage.scss';
 
 const MainPage: React.FC = () => {
+  const isMobile = useMobile(768);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [activeMenuItem, setActiveMenuItem] = useState<string>('executors');
@@ -180,43 +186,83 @@ const MainPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="executors-page">
-      <Header userName="Имя Фамилия" userInitials="ИФ" isVisible={isHeaderVisible} />
+    <div className={`executors-page ${isMobile ? 'executors-page--mobile' : ''}`}>
+      <Header 
+        userName="Имя Фамилия" 
+        userInitials="ИФ" 
+        isVisible={isMobile ? true : isHeaderVisible} 
+      />
       <div className="executors-page__layout">
-        <Sidebar 
-          activeItem={activeMenuItem}
-          isCollapsed={isSidebarCollapsed}
-          onToggle={toggleSidebar}
-          onMenuItemClick={handleMenuItemClick}
-        />
+        {!isMobile && (
+          <Sidebar 
+            activeItem={activeMenuItem}
+            isCollapsed={isSidebarCollapsed}
+            onToggle={toggleSidebar}
+            onMenuItemClick={handleMenuItemClick}
+          />
+        )}
         <main 
           ref={mainContentRef}
-          className={`executors-page__main ${isSidebarCollapsed ? 'executors-page__main--sidebar-collapsed' : ''}`}
+          className={`executors-page__main ${isSidebarCollapsed && !isMobile ? 'executors-page__main--sidebar-collapsed' : ''} ${isMobile ? 'executors-page__main--mobile' : ''}`}
         >
           {activeMenuItem === 'clients' ? (
-            <ClientsTable 
-              clients={clients}
-              onEdit={handleEditClient}
-              onView={handleViewClient}
-            />
+            <>
+              {isMobile ? (
+                <ClientsTableMobile 
+                  clients={clients}
+                  onEdit={handleEditClient}
+                  onView={handleViewClient}
+                />
+              ) : (
+                <ClientsTable 
+                  clients={clients}
+                  onEdit={handleEditClient}
+                  onView={handleViewClient}
+                />
+              )}
+            </>
           ) : activeMenuItem === 'orders' ? (
-            <OrdersTable orders={orders} />
+            <>
+              {isMobile ? (
+                <OrdersTableMobile orders={orders} />
+              ) : (
+                <OrdersTable orders={orders} />
+              )}
+            </>
           ) : activeMenuItem === 'executors' ? (
-            <ExecutorsTable 
-              executors={executors}
-              onEdit={handleEditExecutor}
-              onView={handleViewExecutor}
-            />
+            <>
+              {isMobile ? (
+                <ExecutorsTableMobile 
+                  executors={executors}
+                  onEdit={handleEditExecutor}
+                  onView={handleViewExecutor}
+                />
+              ) : (
+                <ExecutorsTable 
+                  executors={executors}
+                  onEdit={handleEditExecutor}
+                  onView={handleViewExecutor}
+                />
+              )}
+            </>
           ) : null}
         </main>
       </div>
-      <div className="executors-page__decoration">
-        <div className="executors-page__circles">
-          <div className="executors-page__circle executors-page__circle--1"></div>
-          <div className="executors-page__circle executors-page__circle--2"></div>
-          <div className="executors-page__circle executors-page__circle--3"></div>
+      {isMobile && (
+        <BottomNavigation 
+          activeItem={activeMenuItem}
+          onMenuItemClick={handleMenuItemClick}
+        />
+      )}
+      {!isMobile && (
+        <div className="executors-page__decoration">
+          <div className="executors-page__circles">
+            <div className="executors-page__circle executors-page__circle--1"></div>
+            <div className="executors-page__circle executors-page__circle--2"></div>
+            <div className="executors-page__circle executors-page__circle--3"></div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
