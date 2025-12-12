@@ -1,15 +1,20 @@
 import React, { useMemo, useState } from 'react';
 import { FiPlus, FiSearch, FiCalendar, FiMapPin, FiUser } from 'react-icons/fi';
 import type { Order } from '../types';
+import AddOrderModal from './AddOrderModal';
 import './OrdersTableMobile.scss';
 
 interface OrdersTableMobileProps {
   orders: Order[];
+  clients?: Array<{ id: string; name: string }>;
+  executors?: Array<{ id: string; name: string }>;
+  onAddOrder?: (order: Omit<Order, 'id'>) => void;
 }
 
-const OrdersTableMobile: React.FC<OrdersTableMobileProps> = ({ orders }) => {
+const OrdersTableMobile: React.FC<OrdersTableMobileProps> = ({ orders, clients = [], executors = [], onAddOrder }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const filteredOrders = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -48,7 +53,10 @@ const OrdersTableMobile: React.FC<OrdersTableMobileProps> = ({ orders }) => {
               onChange={(event) => setSearchQuery(event.target.value)}
             />
           </div>
-          <button className="orders-table-mobile__btn orders-table-mobile__btn--primary">
+          <button 
+            className="orders-table-mobile__btn orders-table-mobile__btn--primary"
+            onClick={() => setIsAddModalOpen(true)}
+          >
             <FiPlus className="orders-table-mobile__btn-icon" />
             Заказ
           </button>
@@ -120,9 +128,21 @@ const OrdersTableMobile: React.FC<OrdersTableMobileProps> = ({ orders }) => {
           </div>
         )}
       </div>
+      <AddOrderModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={(orderData) => {
+          if (onAddOrder) {
+            onAddOrder(orderData);
+          }
+        }}
+        clients={clients}
+        executors={executors}
+      />
     </div>
   );
 };
 
 export default OrdersTableMobile;
+
 

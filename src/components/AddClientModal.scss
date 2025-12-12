@@ -1,0 +1,127 @@
+.add-client-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.add-client-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.add-client-modal__label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-charcoal);
+  font-family: var(--font-body);
+  line-height: 1.4;
+}
+
+.add-client-modal__label-icon {
+  font-size: 18px;
+  color: var(--color-professional-blue);
+  flex-shrink: 0;
+}
+
+.add-client-modal__input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--color-light-gray);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: var(--font-body);
+  background: var(--color-pure-white);
+  color: var(--color-charcoal);
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-professional-blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  &::placeholder {
+    color: var(--color-medium-gray);
+  }
+
+  &--textarea {
+    resize: vertical;
+    min-height: 100px;
+    font-family: var(--font-body);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 768px) {
+    padding: 10px 14px;
+    font-size: 16px; // Предотвращает масштабирование на iOS
+  }
+}
+
+.add-client-modal__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 16px;
+  padding-right: 120px; // Отступ справа, чтобы не перекрывался декором модального окна
+  border-top: 1px solid var(--color-light-gray);
+  margin-top: 8px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2; // Кнопки выше декора
+
+  @media (max-width: 768px) {
+    flex-direction: column-reverse;
+    gap: 10px;
+    padding-right: 100px; // Меньший отступ на мобильных
+  }
+}
+
+.add-client-modal__btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-height: 44px; // Улучшает доступность на мобильных
+
+  &--primary {
+    background: var(--color-professional-blue);
+    color: var(--color-pure-white);
+
+    &:hover {
+      background: var(--color-deep-navy);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &--secondary {
+    background: var(--color-soft-background);
+    color: var(--color-charcoal);
+    border: 1px solid var(--color-light-gray);
+
+    &:hover {
+      background: var(--color-light-gray);
+    }
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 16px;
+  }
+}
+

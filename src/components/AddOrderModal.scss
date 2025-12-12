@@ -1,0 +1,197 @@
+.add-order-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.add-order-modal__client-type {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 4px;
+}
+
+.add-order-modal__radio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.add-order-modal__radio input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--color-charcoal);
+  flex-shrink: 0;
+}
+
+.add-order-modal__radio-label {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-charcoal);
+  font-family: var(--font-body);
+}
+
+.add-order-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.add-order-modal__field--half {
+  flex: 1;
+}
+
+.add-order-modal__row {
+  display: flex;
+  gap: 16px;
+}
+
+.add-order-modal__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-charcoal);
+  font-family: var(--font-body);
+  line-height: 1.4;
+}
+
+.add-order-modal__input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--color-light-gray);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: var(--font-body);
+  background: var(--color-pure-white); // Поля ввода остаются белыми
+  color: var(--color-charcoal);
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-professional-blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  &::placeholder {
+    color: var(--color-medium-gray);
+  }
+
+  &--textarea {
+    resize: vertical;
+    min-height: 100px;
+    font-family: var(--font-body);
+    line-height: 1.5;
+  }
+
+  // Стили для date и time
+  &[type="date"],
+  &[type="time"] {
+    cursor: pointer;
+  }
+
+  @media (max-width: 768px) {
+    padding: 10px 14px;
+    font-size: 16px; // Предотвращает масштабирование на iOS
+  }
+}
+
+// Стили для select элементов
+.add-order-modal {
+  select.add-order-modal__input {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23374151' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    @media (max-width: 768px) {
+      padding-right: 36px;
+      background-position: right 10px center;
+    }
+  }
+}
+
+.add-order-modal__actions {
+  display: flex;
+  justify-content: flex-start;
+  padding-top: 8px;
+  padding-right: 120px; // Отступ справа, чтобы не перекрывался декором модального окна
+  flex-shrink: 0;
+  margin-top: 4px;
+  position: relative;
+  z-index: 2; // Кнопки выше декора
+
+  @media (max-width: 768px) {
+    padding-right: 100px; // Меньший отступ на мобильных
+  }
+}
+
+.add-order-modal__btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-height: 44px;
+
+  &--primary {
+    background: var(--color-professional-blue);
+    color: var(--color-pure-white);
+
+    &:hover {
+      background: var(--color-deep-navy);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &__icon {
+    font-size: 18px;
+    stroke-width: 2.5;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 16px;
+    justify-content: center;
+  }
+}
+
+.add-order-modal__btn-icon {
+  font-size: 18px;
+  stroke-width: 2.5;
+}
+
+@media (max-width: 768px) {
+  .add-order-modal__row {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .add-order-modal__field--half {
+    width: 100%;
+  }
+
+  .add-order-modal__client-type {
+    flex-direction: column;
+    gap: 12px;
+  }
+}

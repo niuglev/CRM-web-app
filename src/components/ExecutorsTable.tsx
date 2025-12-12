@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { FiEdit3, FiEye, FiPlus, FiSearch } from 'react-icons/fi';
 import type { Executor } from '../types';
+import AddExecutorModal from './AddExecutorModal';
 import './ExecutorsTable.scss';
 
 interface ExecutorsTableProps {
   executors: Executor[];
   onEdit: (executor: Executor) => void;
   onView: (executor: Executor) => void;
+  onAddExecutor?: (executor: Omit<Executor, 'id'>) => void;
 }
 
-const ExecutorsTable: React.FC<ExecutorsTableProps> = ({ executors, onEdit, onView }) => {
+const ExecutorsTable: React.FC<ExecutorsTableProps> = ({ executors, onEdit, onView, onAddExecutor }) => {
   const [selectedFilter, setSelectedFilter] = useState<'corporate' | 'private'>('corporate');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedExecutor, setSelectedExecutor] = useState<string | null>(executors[0]?.id || null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const handleRowClick = (executorId: string) => {
     setSelectedExecutor(executorId);
@@ -46,7 +49,10 @@ const ExecutorsTable: React.FC<ExecutorsTableProps> = ({ executors, onEdit, onVi
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <button className="executors-table__btn executors-table__btn--primary">
+          <button 
+            className="executors-table__btn executors-table__btn--primary"
+            onClick={() => setIsAddModalOpen(true)}
+          >
             <FiPlus className="executors-table__btn-icon" />
             Добавить исполнителя
           </button>
@@ -138,6 +144,15 @@ const ExecutorsTable: React.FC<ExecutorsTableProps> = ({ executors, onEdit, onVi
           </tbody>
         </table>
       </div>
+      <AddExecutorModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={(executorData) => {
+          if (onAddExecutor) {
+            onAddExecutor(executorData);
+          }
+        }}
+      />
     </div>
   );
 };
