@@ -65,3 +65,4 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeItem, onMenuI
 
 export default BottomNavigation;
 
+

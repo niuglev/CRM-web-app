@@ -1,15 +1,20 @@
 import React, { useMemo, useState } from 'react';
 import { FiPlus, FiSearch } from 'react-icons/fi';
 import type { Order } from '../types';
+import AddOrderModal from './AddOrderModal';
 import './OrdersTable.scss';
 
 interface OrdersTableProps {
   orders: Order[];
+  clients?: Array<{ id: string; name: string }>;
+  executors?: Array<{ id: string; name: string }>;
+  onAddOrder?: (order: Omit<Order, 'id'>) => void;
 }
 
-const OrdersTable: React.FC<OrdersTableProps> = ({ orders }) => {
+const OrdersTable: React.FC<OrdersTableProps> = ({ orders, clients = [], executors = [], onAddOrder }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<string | null>(orders[0]?.id ?? null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const filteredOrders = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -50,7 +55,10 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ orders }) => {
               onChange={(event) => setSearchQuery(event.target.value)}
             />
           </div>
-          <button className="orders-table__btn orders-table__btn--primary">
+          <button 
+            className="orders-table__btn orders-table__btn--primary"
+            onClick={() => setIsAddModalOpen(true)}
+          >
             <FiPlus className="orders-table__btn-icon" />
             Заказ
           </button>
@@ -122,6 +130,17 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ orders }) => {
           </tbody>
         </table>
       </div>
+      <AddOrderModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={(orderData) => {
+          if (onAddOrder) {
+            onAddOrder(orderData);
+          }
+        }}
+        clients={clients}
+        executors={executors}
+      />
     </div>
   );
 };

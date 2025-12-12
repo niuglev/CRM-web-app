@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { FiEdit3, FiEye, FiPlus, FiSearch } from 'react-icons/fi';
 import type { Client } from '../types';
+import AddClientModal from './AddClientModal';
 import './ClientsTable.scss';
 
 interface ClientsTableProps {
   clients: Client[];
   onEdit: (client: Client) => void;
   onView: (client: Client) => void;
+  onAddClient?: (client: Omit<Client, 'id'>) => void;
 }
 
-const ClientsTable: React.FC<ClientsTableProps> = ({ clients, onEdit, onView }) => {
+const ClientsTable: React.FC<ClientsTableProps> = ({ clients, onEdit, onView, onAddClient }) => {
   const [selectedFilter, setSelectedFilter] = useState<'corporate' | 'private'>('corporate');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClient, setSelectedClient] = useState<string | null>(clients[0]?.id || null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const handleRowClick = (clientId: string) => {
     setSelectedClient(clientId);
@@ -46,11 +49,10 @@ const ClientsTable: React.FC<ClientsTableProps> = ({ clients, onEdit, onView }) 
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <button className="clients-table__btn clients-table__btn--primary">
-            <FiPlus className="clients-table__btn-icon" />
-            Заказ
-          </button>
-          <button className="clients-table__btn clients-table__btn--primary">
+          <button 
+            className="clients-table__btn clients-table__btn--primary"
+            onClick={() => setIsAddModalOpen(true)}
+          >
             <FiPlus className="clients-table__btn-icon" />
             Клиент
           </button>
@@ -142,11 +144,21 @@ const ClientsTable: React.FC<ClientsTableProps> = ({ clients, onEdit, onView }) 
           </tbody>
         </table>
       </div>
+      <AddClientModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={(clientData) => {
+          if (onAddClient) {
+            onAddClient(clientData);
+          }
+        }}
+      />
     </div>
   );
 };
 
 export default ClientsTable;
+
 
 
 

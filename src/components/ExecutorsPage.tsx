@@ -21,7 +21,7 @@ const MainPage: React.FC = () => {
   const lastScrollY = useRef(0);
 
   // Моковые данные исполнителей
-  const executors: Executor[] = [
+  const [executors, setExecutors] = useState<Executor[]>([
     {
       id: '005',
       name: 'Имя Фамилия',
@@ -52,10 +52,10 @@ const MainPage: React.FC = () => {
       contacts: '(29) 123-4567',
       comments: 'Компания 1. Связной Имя Фамилия - вредный чувак'
     }
-  ];
+  ]);
 
   // Моковые данные клиентов
-  const clients: Client[] = [
+  const [clients, setClients] = useState<Client[]>([
     {
       id: '005-Компания 1',
       name: 'Имя Фамилия',
@@ -86,10 +86,10 @@ const MainPage: React.FC = () => {
       contacts: 'tg.usr01',
       comments: 'Компания 1. Саконой Имя Фимания - продный чупак'
     }
-  ];
+  ]);
 
   // Моковые данные заказов
-  const orders: Order[] = [
+  const [orders, setOrders] = useState<Order[]>([
     {
       id: 'ord-001',
       date: '09.05.25',
@@ -134,7 +134,7 @@ const MainPage: React.FC = () => {
       executorName: 'Имя Фамилия',
       executorId: 'ID',
     },
-  ];
+  ]);
 
   const handleEditExecutor = (executor: Executor) => {
     console.log('Редактировать исполнителя:', executor);
@@ -154,6 +154,36 @@ const MainPage: React.FC = () => {
   const handleViewClient = (client: Client) => {
     console.log('Просмотр клиента:', client);
     // Здесь будет логика просмотра
+  };
+
+  const generateId = (prefix: string = '') => {
+    const timestamp = Date.now();
+    const random = Math.floor(Math.random() * 1000);
+    return `${prefix}${timestamp}-${random}`;
+  };
+
+  const handleAddExecutor = (executorData: Omit<Executor, 'id'>) => {
+    const newExecutor: Executor = {
+      ...executorData,
+      id: generateId('exec-'),
+    };
+    setExecutors([...executors, newExecutor]);
+  };
+
+  const handleAddClient = (clientData: Omit<Client, 'id'>) => {
+    const newClient: Client = {
+      ...clientData,
+      id: generateId('client-'),
+    };
+    setClients([...clients, newClient]);
+  };
+
+  const handleAddOrder = (orderData: Omit<Order, 'id'>) => {
+    const newOrder: Order = {
+      ...orderData,
+      id: generateId('ord-'),
+    };
+    setOrders([...orders, newOrder]);
   };
 
   const toggleSidebar = () => {
@@ -212,21 +242,33 @@ const MainPage: React.FC = () => {
                   clients={clients}
                   onEdit={handleEditClient}
                   onView={handleViewClient}
+                  onAddClient={handleAddClient}
                 />
               ) : (
                 <ClientsTable 
                   clients={clients}
                   onEdit={handleEditClient}
                   onView={handleViewClient}
+                  onAddClient={handleAddClient}
                 />
               )}
             </>
           ) : activeMenuItem === 'orders' ? (
             <>
               {isMobile ? (
-                <OrdersTableMobile orders={orders} />
+                <OrdersTableMobile 
+                  orders={orders}
+                  clients={clients.map(c => ({ id: c.id, name: c.name }))}
+                  executors={executors.map(e => ({ id: e.id, name: e.name }))}
+                  onAddOrder={handleAddOrder}
+                />
               ) : (
-                <OrdersTable orders={orders} />
+                <OrdersTable 
+                  orders={orders}
+                  clients={clients.map(c => ({ id: c.id, name: c.name }))}
+                  executors={executors.map(e => ({ id: e.id, name: e.name }))}
+                  onAddOrder={handleAddOrder}
+                />
               )}
             </>
           ) : activeMenuItem === 'executors' ? (
@@ -236,12 +278,14 @@ const MainPage: React.FC = () => {
                   executors={executors}
                   onEdit={handleEditExecutor}
                   onView={handleViewExecutor}
+                  onAddExecutor={handleAddExecutor}
                 />
               ) : (
                 <ExecutorsTable 
                   executors={executors}
                   onEdit={handleEditExecutor}
                   onView={handleViewExecutor}
+                  onAddExecutor={handleAddExecutor}
                 />
               )}
             </>
@@ -254,15 +298,10 @@ const MainPage: React.FC = () => {
           onMenuItemClick={handleMenuItemClick}
         />
       )}
-      {!isMobile && (
-        <div className="executors-page__decoration">
-          <div className="executors-page__circles">
-            <div className="executors-page__circle executors-page__circle--1"></div>
-            <div className="executors-page__circle executors-page__circle--2"></div>
-            <div className="executors-page__circle executors-page__circle--3"></div>
-          </div>
-        </div>
-      )}
+      <div className="executors-page__decoration">
+        <div className="executors-page__quarter-circle"></div>
+        <div className="executors-page__white-arc"></div>
+      </div>
     </div>
   );
 };

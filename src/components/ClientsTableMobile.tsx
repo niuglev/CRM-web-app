@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { FiEdit3, FiEye, FiPlus, FiSearch, FiPhone } from 'react-icons/fi';
 import type { Client } from '../types';
+import AddClientModal from './AddClientModal';
 import './ClientsTableMobile.scss';
 
 interface ClientsTableMobileProps {
   clients: Client[];
   onEdit: (client: Client) => void;
   onView: (client: Client) => void;
+  onAddClient?: (client: Omit<Client, 'id'>) => void;
 }
 
-const ClientsTableMobile: React.FC<ClientsTableMobileProps> = ({ clients, onEdit, onView }) => {
+const ClientsTableMobile: React.FC<ClientsTableMobileProps> = ({ clients, onEdit, onView, onAddClient }) => {
   const [selectedFilter, setSelectedFilter] = useState<'corporate' | 'private'>('corporate');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const filteredClients = clients.filter(client => {
     if (searchQuery) {
@@ -43,11 +46,10 @@ const ClientsTableMobile: React.FC<ClientsTableMobileProps> = ({ clients, onEdit
             />
           </div>
           <div className="clients-table-mobile__buttons">
-            <button className="clients-table-mobile__btn clients-table-mobile__btn--primary">
-              <FiPlus className="clients-table-mobile__btn-icon" />
-              Заказ
-            </button>
-            <button className="clients-table-mobile__btn clients-table-mobile__btn--primary">
+            <button 
+              className="clients-table-mobile__btn clients-table-mobile__btn--primary"
+              onClick={() => setIsAddModalOpen(true)}
+            >
               <FiPlus className="clients-table-mobile__btn-icon" />
               Клиент
             </button>
@@ -135,9 +137,19 @@ const ClientsTableMobile: React.FC<ClientsTableMobileProps> = ({ clients, onEdit
           </div>
         )}
       </div>
+      <AddClientModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={(clientData) => {
+          if (onAddClient) {
+            onAddClient(clientData);
+          }
+        }}
+      />
     </div>
   );
 };
 
 export default ClientsTableMobile;
+
 

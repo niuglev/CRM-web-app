@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { FiEdit3, FiEye, FiPlus, FiSearch, FiPhone } from 'react-icons/fi';
 import type { Executor } from '../types';
+import AddExecutorModal from './AddExecutorModal';
 import './ExecutorsTableMobile.scss';
 
 interface ExecutorsTableMobileProps {
   executors: Executor[];
   onEdit: (executor: Executor) => void;
   onView: (executor: Executor) => void;
+  onAddExecutor?: (executor: Omit<Executor, 'id'>) => void;
 }
 
-const ExecutorsTableMobile: React.FC<ExecutorsTableMobileProps> = ({ executors, onEdit, onView }) => {
+const ExecutorsTableMobile: React.FC<ExecutorsTableMobileProps> = ({ executors, onEdit, onView, onAddExecutor }) => {
   const [selectedFilter, setSelectedFilter] = useState<'corporate' | 'private'>('corporate');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedExecutor, setSelectedExecutor] = useState<string | null>(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const filteredExecutors = executors.filter(executor => {
     if (searchQuery) {
@@ -42,7 +45,10 @@ const ExecutorsTableMobile: React.FC<ExecutorsTableMobileProps> = ({ executors, 
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <button className="executors-table-mobile__btn executors-table-mobile__btn--primary">
+          <button 
+            className="executors-table-mobile__btn executors-table-mobile__btn--primary"
+            onClick={() => setIsAddModalOpen(true)}
+          >
             <FiPlus className="executors-table-mobile__btn-icon" />
             Добавить исполнителя
           </button>
@@ -129,9 +135,19 @@ const ExecutorsTableMobile: React.FC<ExecutorsTableMobileProps> = ({ executors, 
           </div>
         )}
       </div>
+      <AddExecutorModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={(executorData) => {
+          if (onAddExecutor) {
+            onAddExecutor(executorData);
+          }
+        }}
+      />
     </div>
   );
 };
 
 export default ExecutorsTableMobile;
+
 
