@@ -1,57 +1,147 @@
-import React, { useState, useEffect } from 'react';
-import { FiSearch, FiBell, FiChevronDown } from 'react-icons/fi';
+import React, { useState, useEffect, useCallback } from 'react';
+import { FiSearch, FiBell, FiChevronDown, FiMenu, FiX } from 'react-icons/fi';
+import UserDropdown from './UserDropdown';
+import SystemNotification from './SystemNotification';
 import './Header.scss';
 
 export interface HeaderProps {
-  userName: string;
-  userInitials: string;
-  isVisible?: boolean;
+    userName: string;
+    userInitials: string;
+    isVisible?: boolean;
+    onNotificationClick?: () => void;
+    onStatisticsClick?: () => void;
+    onLogoutClick?: () => void;
+    onMenuToggle?: () => void;
+    isMenuOpen?: boolean;
+    showSystemNotification?: boolean;
+    notificationMessage?: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ userName, userInitials, isVisible = true }) => {
-  const [isScrolled, setIsScrolled] = useState(false);
+const Header: React.FC<HeaderProps> = ({
+    userName,
+    userInitials,
+    isVisible = true,
+    onNotificationClick,
+    onStatisticsClick,
+    onLogoutClick,
+    onMenuToggle,
+    isMenuOpen = false,
+    showSystemNotification = false,
+    notificationMessage = 'Система была обновлена'
+}) => {
+    const [isScrolled, setIsScrolled] = useState(false);
+    const [showNotification, setShowNotification] = useState(showSystemNotification);
+    const [notificationCount, setNotificationCount] = useState(0);
 
-  useEffect(() => {
-    // Проверяем начальную позицию скролла
-    const checkScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    
-    checkScroll();
-    window.addEventListener('scroll', checkScroll, { passive: true });
-    return () => window.removeEventListener('scroll', checkScroll);
-  }, []);
+    // Эффект для отслеживания скролла
+    useEffect(() => {
+        const checkScroll = () => {
+            setIsScrolled(window.scrollY > 10);
+        };
 
-  return (
-    <header className={`header ${isScrolled ? 'header--scrolled' : ''} ${!isVisible ? 'header--hidden' : ''}`}>
-      <div className="header__main">
-        <div className="header__left">
-          <h1 className="header__logo">KP-CRM</h1>
-        </div>
-        <div className="header__center">
-          <div className="header__search">
-            <FiSearch className="header__search-icon" />
-            <input 
-              type="text" 
-              placeholder="Найдите клиента или заказ..." 
-              className="header__search-input"
-            />
-          </div>
-        </div>
-        <div className="header__right">
-          <FiBell className="header__bell" />
-          <div className="header__user">
-            <div className="header__user-avatar">
-              {userInitials}
-            </div>
-            <span className="header__user-name">{userName}</span>
-            <FiChevronDown className="header__user-chevron" />
-          </div>
-        </div>
-      </div>
-    </header>
-  );
+        checkScroll();
+        window.addEventListener('scroll', checkScroll, { passive: true });
+        return () => window.removeEventListener('scroll', checkScroll);
+    }, []);
+
+    // Эффект для симуляции уведомлений (в реальном приложении получать из API)
+    useEffect(() => {
+        const timer = setInterval(() => {
+            // Случайное обновление счетчика уведомлений
+            if (Math.random() > 0.7) {
+                setNotificationCount(prev => prev + 1);
+            }
+        }, 30000);
+
+        return () => clearInterval(timer);
+    }, []);
+
+    // Обработчик клика по колокольчику
+    const handleBellClick = useCallback(() => {
+        setNotificationCount(0);
+        onNotificationClick?.();
+    }, [onNotificationClick]);
+
+    // Обработчик закрытия системного уведомления
+    const handleNotificationClose = useCallback(() => {
+        setShowNotification(false);
+    }, []);
+
+    // Обработчики для UserDropdown
+    const handleStatisticsClick = useCallback(() => {
+        onStatisticsClick?.();
+    }, [onStatisticsClick]);
+
+    const handleLogoutClick = useCallback(() => {
+        onLogoutClick?.();
+    }, [onLogoutClick]);
+
+    // Обработчик клика по меню (для мобильной версии)
+    const handleMenuToggle = useCallback(() => {
+        onMenuToggle?.();
+    }, [onMenuToggle]);
+
+    return (
+        <>
+            <header className={`header ${isScrolled ? 'header--scrolled' : ''} ${!isVisible ? 'header--hidden' : ''}`}>
+                <div className="header__main">
+                    <div className="header__left">
+                        <button
+                            className="header__menu-toggle"
+                            onClick={handleMenuToggle}
+                            aria-label={isMenuOpen ? 'Закрыть меню' : 'Открыть меню'}
+                            aria-expanded={isMenuOpen}
+                        >
+                            {isMenuOpen ? <FiX /> : <FiMenu />}
+                        </button>
+                        <h1 className="header__logo">KP-CRM</h1>
+                    </div>
+
+                    <div className="header__center">
+                        <div className="header__search">
+                            <FiSearch className="header__search-icon" />
+                            <input
+                                type="text"
+                                placeholder="Найдите клиента или заказ..."
+                                className="header__search-input"
+                                aria-label="Поиск клиентов и заказов"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="header__right">
+                        <button
+                            className="header__notification"
+                            onClick={handleBellClick}
+                            aria-label={`Уведомления ${notificationCount > 0 ? `(${notificationCount} новых)` : ''}`}
+                        >
+                            <FiBell className="header__bell" />
+                            {notificationCount > 0 && (
+                                <span className="header__notification-badge">{notificationCount}</span>
+                            )}
+                        </button>
+
+                        <div className="header__user-dropdown">
+                            <UserDropdown
+                                userName={userName}
+                                onStatisticsClick={handleStatisticsClick}
+                                onLogoutClick={handleLogoutClick}
+                                userInitials={userInitials}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            {showNotification && (
+                <SystemNotification
+                    message={notificationMessage}
+                    duration={5000}
+                    onClose={handleNotificationClose}
+                />
+            )}
+        </>
+    );
 };
 
 export default Header;
-
