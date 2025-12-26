@@ -1,7 +1,7 @@
 .add-order-modal {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px; // Увеличил gap для лучшего соответствия макету
 }
 
 .add-order-modal__client-type {
@@ -37,11 +37,26 @@
 .add-order-modal__field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0; // Убрал gap, margin-bottom будет на label
 }
 
 .add-order-modal__field--half {
   flex: 1;
+}
+
+.add-order-modal__field--date {
+  flex: 0 0 auto;
+  width: 140px;
+}
+
+.add-order-modal__field--time {
+  flex: 0 0 auto;
+  width: 140px;
+}
+
+.add-order-modal__field--description {
+  flex: 1;
+  min-width: 200px;
 }
 
 .add-order-modal__row {
@@ -54,7 +69,8 @@
   font-weight: 500;
   color: var(--color-charcoal);
   font-family: var(--font-body);
-  line-height: 1.4;
+  line-height: 1.5;
+  margin-bottom: 8px;
 }
 
 .add-order-modal__input {
@@ -80,10 +96,14 @@
   }
 
   &--textarea {
-    resize: vertical;
-    min-height: 100px;
+    resize: none;
+    min-height: 40px;
+    height: 40px;
     font-family: var(--font-body);
     line-height: 1.5;
+    overflow-y: auto;
+    padding-top: 12px;
+    padding-bottom: 12px;
   }
 
   // Стили для date и time
@@ -92,10 +112,28 @@
     cursor: pointer;
   }
 
+  &--error {
+    border-color: var(--color-soft-red);
+    
+    &:focus {
+      border-color: var(--color-soft-red);
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+  }
+
   @media (max-width: 768px) {
     padding: 10px 14px;
     font-size: 16px; // Предотвращает масштабирование на iOS
   }
+}
+
+.add-order-modal__error {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--color-soft-red);
+  font-family: var(--font-body);
+  line-height: 1.4;
 }
 
 // Стили для select элементов
@@ -119,17 +157,12 @@
 
 .add-order-modal__actions {
   display: flex;
-  justify-content: flex-start;
-  padding-top: 8px;
-  padding-right: 120px; // Отступ справа, чтобы не перекрывался декором модального окна
+  justify-content: flex-start; // Кнопка слева
+  padding-top: 0;
   flex-shrink: 0;
-  margin-top: 4px;
+  margin-top: 0;
   position: relative;
   z-index: 2; // Кнопки выше декора
-
-  @media (max-width: 768px) {
-    padding-right: 100px; // Меньший отступ на мобильных
-  }
 }
 
 .add-order-modal__btn {
@@ -186,7 +219,10 @@
     gap: 20px;
   }
 
-  .add-order-modal__field--half {
+  .add-order-modal__field--half,
+  .add-order-modal__field--date,
+  .add-order-modal__field--time,
+  .add-order-modal__field--description {
     width: 100%;
   }
 

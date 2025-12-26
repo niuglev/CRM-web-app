@@ -16,9 +16,63 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSubm
     contacts: '',
     comments: '',
   });
+  const [errors, setErrors] = useState<{ contacts?: string }>({});
+
+  const validateContacts = (contacts: string): string | undefined => {
+    if (!contacts || contacts.trim().length === 0) {
+      return 'Поле контактов обязательно для заполнения';
+    }
+
+    const trimmedContacts = contacts.trim();
+    
+    // Проверка на минимальную длину
+    if (trimmedContacts.length < 3) {
+      return 'Контакт слишком короткий (минимум 3 символа)';
+    }
+
+    // Проверка на валидный формат (телефон, email, мессенджер и т.д.)
+    const phoneRegex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const messengerRegex = /^(tg\.|@|wa\(|wa\.|viber\.|telegram\.)/i;
+    
+    const isPhone = phoneRegex.test(trimmedContacts);
+    const isEmail = emailRegex.test(trimmedContacts);
+    const isMessenger = messengerRegex.test(trimmedContacts);
+    const hasAtSymbol = trimmedContacts.includes('@');
+    const hasDigits = /\d/.test(trimmedContacts);
+
+    // Принимаем если это телефон, email, мессенджер или содержит @ или цифры
+    if (!isPhone && !isEmail && !isMessenger && !hasAtSymbol && !hasDigits) {
+      return 'Введите корректный контакт (телефон, email, мессенджер и т.д.)';
+    }
+
+    return undefined;
+  };
+
+  const handleContactsChange = (value: string) => {
+    setFormData({ ...formData, contacts: value });
+    // Очищаем ошибку при вводе
+    if (errors.contacts) {
+      setErrors({ ...errors, contacts: undefined });
+    }
+  };
+
+  const handleContactsBlur = () => {
+    const error = validateContacts(formData.contacts);
+    if (error) {
+      setErrors({ ...errors, contacts: error });
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const contactsError = validateContacts(formData.contacts);
+    
+    if (contactsError) {
+      setErrors({ contacts: contactsError });
+      return;
+    }
+
     if (formData.name && formData.contacts) {
       onSubmit(formData);
       handleClose();
@@ -31,6 +85,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSubm
       contacts: '',
       comments: '',
     });
+    setErrors({});
     onClose();
   };
 
@@ -59,12 +114,16 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSubm
           </label>
           <input
             type="text"
-            className="add-client-modal__input"
+            className={`add-client-modal__input ${errors.contacts ? 'add-client-modal__input--error' : ''}`}
             placeholder="Телефон, email, мессенджер и т.д."
             value={formData.contacts}
-            onChange={(e) => setFormData({ ...formData, contacts: e.target.value })}
+            onChange={(e) => handleContactsChange(e.target.value)}
+            onBlur={handleContactsBlur}
             required
           />
+          {errors.contacts && (
+            <span className="add-client-modal__error">{errors.contacts}</span>
+          )}
         </div>
 
         <div className="add-client-modal__field">
@@ -82,13 +141,6 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSubm
         </div>
 
         <div className="add-client-modal__actions">
-          <button
-            type="button"
-            className="add-client-modal__btn add-client-modal__btn--secondary"
-            onClick={handleClose}
-          >
-            Отмена
-          </button>
           <button type="submit" className="add-client-modal__btn add-client-modal__btn--primary">
             Добавить клиента
           </button>

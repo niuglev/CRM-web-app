@@ -16,18 +16,18 @@
   &__main {
     flex: 1;
     margin-left: 15vw; // Ширина sidebar
-    padding: 4vh 3vw;
+    padding: 32px 24px;
     position: relative;
     z-index: 1; // Таблицы на переднем плане, могут перекрывать декор
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 8vh); // Вычитаем высоту header
-    overflow-y: auto;
-    margin-top: 8vh; // Высота header
+    height: calc(100vh - 64px); // Вычитаем высоту header (64px)
+    overflow-y: visible; // Убираем прокрутку на уровне main, прокрутка внутри таблиц
+    margin-top: 64px; // Высота header
     transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     &--sidebar-collapsed {
-      margin-left: 4vw; // Ширина collapsed sidebar
+      margin-left: 64px; // Ширина collapsed sidebar
     }
   }
 

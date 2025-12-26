@@ -1,13 +1,13 @@
 .add-executor-modal {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px; // Увеличил gap для лучшего соответствия макету
 }
 
 .add-executor-modal__field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0; // Убрал gap, margin-bottom будет на label
 }
 
 .add-executor-modal__label {
@@ -15,10 +15,11 @@
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500; // Изменено с 600 на 500 для лучшего соответствия макету
   color: var(--color-charcoal);
   font-family: var(--font-body);
-  line-height: 1.4;
+  line-height: 1.5;
+  margin-bottom: 8px;
 }
 
 .add-executor-modal__label-icon {
@@ -56,28 +57,43 @@
     line-height: 1.5;
   }
 
+  &--error {
+    border-color: var(--color-soft-red);
+    
+    &:focus {
+      border-color: var(--color-soft-red);
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+  }
+
   @media (max-width: 768px) {
     padding: 10px 14px;
     font-size: 16px; // Предотвращает масштабирование на iOS
   }
 }
 
+.add-executor-modal__error {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--color-soft-red);
+  font-family: var(--font-body);
+  line-height: 1.4;
+}
+
 .add-executor-modal__actions {
   display: flex;
   gap: 12px;
-  justify-content: flex-end;
-  padding-top: 16px;
-  padding-right: 120px; // Отступ справа, чтобы не перекрывался декором модального окна
-  border-top: 1px solid var(--color-light-gray);
-  margin-top: 8px;
+  justify-content: flex-start; // Кнопка слева
+  padding-top: 0;
+  margin-top: 0;
   flex-shrink: 0;
   position: relative;
   z-index: 2; // Кнопки выше декора
 
   @media (max-width: 768px) {
-    flex-direction: column-reverse;
+    flex-direction: column;
     gap: 10px;
-    padding-right: 100px; // Меньший отступ на мобильных
   }
 }
 

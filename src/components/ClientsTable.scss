@@ -6,20 +6,21 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  max-height: 700px; // Максимальная высота таблицы
 
   &__header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 4vh 3vw 3vh;
+    padding: 32px 32px 24px;
     border-bottom: 1px solid var(--color-light-gray);
-    gap: 3vw;
+    gap: 24px;
     flex-wrap: wrap;
   }
 
   &__title {
     font-family: var(--font-heading);
-    font-size: 3.5vh;
+    font-size: 28px;
     font-weight: 700;
     color: var(--color-charcoal);
     margin: 0;
@@ -37,26 +38,26 @@
 
   &__search {
     position: relative;
-    min-width: 20vw;
+    min-width: 280px;
     flex: 0 1 auto;
 
     &-icon {
       position: absolute;
-      left: 1.5vh;
+      left: 14px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--color-medium-gray);
-      font-size: 2.2vh;
+      font-size: 18px;
       pointer-events: none;
     }
 
     &-input {
       width: 100%;
-      height: 5vh;
-      padding: 0 1.5vh 0 5vh;
+      height: 40px;
+      padding: 0 14px 0 42px;
       border: 1px solid var(--color-light-gray);
-      border-radius: 1vh;
-      font-size: 1.75vh;
+      border-radius: 8px;
+      font-size: 14px;
       font-family: var(--font-body);
       background: var(--color-soft-background);
       color: var(--color-charcoal);
@@ -66,7 +67,7 @@
         outline: none;
         border-color: var(--color-professional-blue);
         background: var(--color-pure-white);
-        box-shadow: 0 0 0 0.4vh rgba(37, 99, 235, 0.1);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
       }
 
       &::placeholder {
@@ -78,11 +79,11 @@
   &__btn {
     display: flex;
     align-items: center;
-    gap: 1vh;
-    padding: 1.25vh 2.5vw;
+    gap: 8px;
+    padding: 10px 20px;
     border: none;
-    border-radius: 1vh;
-    font-size: 1.75vh;
+    border-radius: 8px;
+    font-size: 14px;
     font-weight: 600;
     font-family: var(--font-body);
     cursor: pointer;
@@ -96,7 +97,7 @@
       &:hover {
         background: var(--color-deep-navy);
         transform: translateY(-1px);
-        box-shadow: 0 0.5vh 1.5vh rgba(37, 99, 235, 0.3);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
       }
 
       &:active {
@@ -105,33 +106,33 @@
     }
 
     &-icon {
-      font-size: 2.2vh;
+      font-size: 18px;
       stroke-width: 2.5;
     }
   }
 
   &__filters {
     display: flex;
-    padding: 0 3vw;
-    gap: 1vh;
+    padding: 0 32px;
+    gap: 8px;
     border-bottom: 1px solid var(--color-light-gray);
     background: var(--color-soft-background);
-    min-height: 6.5vh;
+    min-height: 52px;
     align-items: center;
   }
 
   &__filter {
-    padding: 1vh 2.5vw;
+    padding: 8px 20px;
     border: none;
     background: transparent;
     color: var(--color-medium-gray);
-    font-size: 1.5vh;
+    font-size: 12px;
     font-weight: 600;
     font-family: var(--font-body);
     text-transform: uppercase;
-    letter-spacing: 0.1vh;
+    letter-spacing: 0.8px;
     cursor: pointer;
-    border-radius: 0.75vh;
+    border-radius: 6px;
     transition: all 0.2s ease;
     position: relative;
 
@@ -143,19 +144,22 @@
     &--active {
       background: var(--color-professional-blue);
       color: var(--color-pure-white);
-      box-shadow: 0 0.25vh 0.5vh rgba(37, 99, 235, 0.2);
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
     }
   }
 
   &__content {
     overflow-x: auto;
+    overflow-y: auto;
     flex: 1;
     min-height: 0;
+    max-height: 600px; // Фиксированная максимальная высота для прокрутки
   }
 
   &__table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed; // Фиксированная ширина колонок для предотвращения смещения
   }
 
   &__header-row {
@@ -163,20 +167,21 @@
   }
 
   &__header-cell {
-    padding: 2vh 3vw;
+    padding: 16px 32px;
     text-align: left;
-    font-size: 1.4vh;
+    font-size: 11px;
     font-weight: 600;
     font-family: var(--font-body);
     color: var(--color-medium-gray);
     text-transform: uppercase;
-    letter-spacing: 0.12vh;
+    letter-spacing: 1px;
     border-bottom: 2px solid var(--color-light-gray);
     white-space: nowrap;
+    box-sizing: border-box; // Учитываем padding и border в общей ширине
 
     &--actions {
       text-align: center;
-      width: 15vw;
+      width: 120px;
     }
   }
 
@@ -204,8 +209,11 @@
   }
 
   &__cell {
-    padding: 2.5vh 3vw;
+    padding: 20px 32px;
     vertical-align: middle;
+    box-sizing: border-box; // Учитываем padding и border в общей ширине
+    word-wrap: break-word; // Перенос длинных слов
+    overflow-wrap: break-word;
 
     &--actions {
       text-align: center;
@@ -214,25 +222,25 @@
 
   &__name {
     &-text {
-      font-size: 1.9vh;
+      font-size: 15px;
       font-weight: 600;
       font-family: var(--font-body);
       color: var(--color-charcoal);
-      margin-bottom: 0.75vh;
+      margin-bottom: 6px;
       line-height: 1.4;
     }
 
     &-id {
-      font-size: 1.5vh;
+      font-size: 12px;
       font-weight: 400;
       font-family: var(--font-body);
       color: var(--color-medium-gray);
-      letter-spacing: 0.04vh;
+      letter-spacing: 0.3px;
     }
   }
 
   &__contacts {
-    font-size: 1.75vh;
+    font-size: 14px;
     font-family: var(--font-body);
     color: var(--color-charcoal);
     line-height: 1.5;
@@ -240,11 +248,11 @@
   }
 
   &__comments {
-    font-size: 1.75vh;
+    font-size: 14px;
     font-family: var(--font-body);
     color: var(--color-charcoal);
     line-height: 1.5;
-    max-width: 50vw;
+    max-width: 400px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -252,7 +260,7 @@
 
   &__actions-cell {
     display: flex;
-    gap: 0.5vh;
+    gap: 4px;
     justify-content: center;
     align-items: center;
   }
@@ -261,15 +269,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 4.5vh;
-    height: 4.5vh;
+    width: 36px;
+    height: 36px;
     border: none;
     background: transparent;
     color: var(--color-medium-gray);
     cursor: pointer;
-    border-radius: 0.75vh;
+    border-radius: 6px;
     transition: all 0.2s ease;
-    font-size: 2.2vh;
+    font-size: 18px;
 
     &:hover {
       background: var(--color-light-gray);
@@ -284,11 +292,11 @@
 
   &__empty {
     text-align: center;
-    padding: 7.5vh 3vw;
+    padding: 60px 32px;
   }
 
   &__empty-message {
-    font-size: 2vh;
+    font-size: 16px;
     font-family: var(--font-body);
     color: var(--color-medium-gray);
     font-weight: 500;

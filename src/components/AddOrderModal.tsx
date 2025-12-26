@@ -31,6 +31,7 @@ const AddOrderModal: React.FC<AddOrderModalProps> = ({
     executorId: '',
     executorName: '',
   });
+  const [errors, setErrors] = useState<{ contacts?: string }>({});
 
   const formatDate = (dateString: string): string => {
     if (!dateString) return '';
@@ -46,8 +47,61 @@ const AddOrderModal: React.FC<AddOrderModalProps> = ({
     return timeString.slice(0, 5).replace(':', '/');
   };
 
+  const validateContacts = (contacts: string): string | undefined => {
+    if (!contacts || contacts.trim().length === 0) {
+      return 'Поле контактов обязательно для заполнения';
+    }
+
+    const trimmedContacts = contacts.trim();
+    
+    // Проверка на минимальную длину
+    if (trimmedContacts.length < 3) {
+      return 'Контакт слишком короткий (минимум 3 символа)';
+    }
+
+    // Проверка на валидный формат (телефон, email, мессенджер и т.д.)
+    const phoneRegex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const messengerRegex = /^(tg\.|@|wa\(|wa\.|viber\.|telegram\.)/i;
+    
+    const isPhone = phoneRegex.test(trimmedContacts);
+    const isEmail = emailRegex.test(trimmedContacts);
+    const isMessenger = messengerRegex.test(trimmedContacts);
+    const hasAtSymbol = trimmedContacts.includes('@');
+    const hasDigits = /\d/.test(trimmedContacts);
+
+    // Принимаем если это телефон, email, мессенджер или содержит @ или цифры
+    if (!isPhone && !isEmail && !isMessenger && !hasAtSymbol && !hasDigits) {
+      return 'Введите корректный контакт (телефон, email, мессенджер и т.д.)';
+    }
+
+    return undefined;
+  };
+
+  const handleContactsChange = (value: string) => {
+    setFormData({ ...formData, contacts: value });
+    // Очищаем ошибку при вводе
+    if (errors.contacts) {
+      setErrors({ ...errors, contacts: undefined });
+    }
+  };
+
+  const handleContactsBlur = () => {
+    const error = validateContacts(formData.contacts);
+    if (error) {
+      setErrors({ ...errors, contacts: error });
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const contactsError = validateContacts(formData.contacts);
+    
+    if (contactsError) {
+      setErrors({ contacts: contactsError });
+      return;
+    }
+
     if (
       formData.customerName &&
       formData.address &&
@@ -83,6 +137,7 @@ const AddOrderModal: React.FC<AddOrderModalProps> = ({
       executorId: '',
       executorName: '',
     });
+    setErrors({});
     onClose();
   };
 
@@ -166,17 +221,21 @@ const AddOrderModal: React.FC<AddOrderModalProps> = ({
             <label className="add-order-modal__label">Контакты</label>
             <input
               type="text"
-              className="add-order-modal__input"
+              className={`add-order-modal__input ${errors.contacts ? 'add-order-modal__input--error' : ''}`}
               placeholder="Номер телефона"
               value={formData.contacts}
-              onChange={(e) => setFormData({ ...formData, contacts: e.target.value })}
+              onChange={(e) => handleContactsChange(e.target.value)}
+              onBlur={handleContactsBlur}
               required
             />
+            {errors.contacts && (
+              <span className="add-order-modal__error">{errors.contacts}</span>
+            )}
           </div>
         </div>
 
         <div className="add-order-modal__row">
-          <div className="add-order-modal__field add-order-modal__field--half">
+          <div className="add-order-modal__field add-order-modal__field--date">
             <label className="add-order-modal__label">Дата</label>
             <input
               type="date"
@@ -186,7 +245,7 @@ const AddOrderModal: React.FC<AddOrderModalProps> = ({
               required
             />
           </div>
-          <div className="add-order-modal__field add-order-modal__field--half">
+          <div className="add-order-modal__field add-order-modal__field--time">
             <label className="add-order-modal__label">Время</label>
             <input
               type="time"
@@ -196,24 +255,23 @@ const AddOrderModal: React.FC<AddOrderModalProps> = ({
               required
             />
           </div>
-        </div>
-
-        <div className="add-order-modal__field">
-          <label className="add-order-modal__label">Описание заказа</label>
-          <textarea
-            className="add-order-modal__input add-order-modal__input--textarea"
-            placeholder="Введите описание заказа"
-            value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            required
-            rows={4}
-          />
+          <div className="add-order-modal__field add-order-modal__field--description">
+            <label className="add-order-modal__label">Описание заказа</label>
+            <textarea
+              className="add-order-modal__input add-order-modal__input--textarea"
+              placeholder="Введите описание заказа"
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              required
+              rows={1}
+            />
+          </div>
         </div>
 
         <div className="add-order-modal__actions">
           <button type="submit" className="add-order-modal__btn add-order-modal__btn--primary">
             <FiPlus className="add-order-modal__btn-icon" />
-            Добавить заказ
+            <span>Добавить заказ</span>
           </button>
         </div>
       </form>
