@@ -9,7 +9,9 @@ import OrdersTableMobile from './OrdersTableMobile';
 import ClientsTable from './ClientsTable';
 import ClientsTableMobile from './ClientsTableMobile';
 import useMobile from '../hooks/useMobile';
-import type { Executor, Client, Order } from '../types';
+import type { Executor, Client, Order, User } from '../types';
+import { dataApi } from '../api/services';
+import { authApi } from '../api/auth';
 import './ExecutorsPage.scss';
 
 const MainPage: React.FC = () => {
@@ -20,121 +22,50 @@ const MainPage: React.FC = () => {
   const mainContentRef = useRef<HTMLElement>(null);
   const lastScrollY = useRef(0);
 
-  // Моковые данные исполнителей
-  const [executors, setExecutors] = useState<Executor[]>([
-    {
-      id: '005',
-      name: 'Имя Фамилия',
-      contacts: '(29) 123-4567',
-      comments: 'Компания 1. Связной Имя Фамилия - вредный чувак'
-    },
-    {
-      id: '001',
-      name: 'Имя Фамилия',
-      contacts: 'wa(391) 123-4567',
-      comments: 'Компания 1. Связной Имя Фамилия - вредный чувак'
-    },
-    {
-      id: '002',
-      name: 'Имя Фамилия',
-      contacts: 'imya@mail.ru',
-      comments: 'Компания 1. Связной Имя Фамилия - вредный чувак'
-    },
-    {
-      id: '003',
-      name: 'Имя Фамилия',
-      contacts: 'lg.user01',
-      comments: 'Компания 1. Связной Имя Фамилия - вредный чувак'
-    },
-    {
-      id: '004',
-      name: 'Имя Фамилия',
-      contacts: '(29) 123-4567',
-      comments: 'Компания 1. Связной Имя Фамилия - вредный чувак'
-    }
-  ]);
+  // Текущий пользователь
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  // Моковые данные клиентов
-  const [clients, setClients] = useState<Client[]>([
-    {
-      id: '005-Компания 1',
-      name: 'Имя Фамилия',
-      contacts: '12041123-4587',
-      comments: 'Компания 1. Саконой Имя Фимания - продный чупак'
-    },
-    {
-      id: '001',
-      name: 'Имя Фамилия',
-      contacts: 'nsd391123-4567',
-      comments: 'Компания 1. Саконой Имя Фимания - продный чупак'
-    },
-    {
-      id: '002',
-      name: 'Имя Фамилия',
-      contacts: 'irya@mail.ru',
-      comments: 'Компания 1. Саконой Имя Фимания - продный чупак'
-    },
-    {
-      id: '003',
-      name: 'Имя Фамилия',
-      contacts: '139123-45602',
-      comments: 'Компания 1. Саконой Имя Фимания - продный чупак'
-    },
-    {
-      id: '004-Компания 2',
-      name: 'Имя Фамилия',
-      contacts: 'tg.usr01',
-      comments: 'Компания 1. Саконой Имя Фимания - продный чупак'
-    }
-  ]);
+  // Реальные данные исполнителей
+  const [executors, setExecutors] = useState<Executor[]>([]);
+  // Реальные данные клиентов
+  const [clients, setClients] = useState<Client[]>([]);
+  // Реальные данные заказов
+  const [orders, setOrders] = useState<Order[]>([]);
 
-  // Моковые данные заказов
-  const [orders, setOrders] = useState<Order[]>([
-    {
-      id: 'ord-001',
-      date: '09.05.25',
-      time: '07:00',
-      customerName: 'Имя заказчика',
-      customerId: 'ID',
-      description: 'Первый заказ компании Урал',
-      address: 'г. Пушкино, ул. Колхозная, д. 42',
-      executorName: 'Имя Фамилия',
-      executorId: 'ID',
-    },
-    {
-      id: 'ord-002',
-      date: '10.05.25',
-      time: '13:30',
-      customerName: 'Имя заказчика',
-      customerId: 'ID',
-      description: 'Второй заказ компании Урал',
-      address: 'г. Екатеринбург, ул. Ленина, 10',
-      executorName: 'Имя Фамилия',
-      executorId: 'ID',
-    },
-    {
-      id: 'ord-003',
-      date: '12.05.25',
-      time: '09:15',
-      customerName: 'Имя заказчика',
-      customerId: 'ID',
-      description: 'Монтаж оборудования, этап 1',
-      address: 'г. Казань, ул. Советская, 7',
-      executorName: 'Имя Фамилия',
-      executorId: 'ID',
-    },
-    {
-      id: 'ord-004',
-      date: '15.05.25',
-      time: '16:45',
-      customerName: 'Имя заказчика',
-      customerId: 'ID',
-      description: 'Диагностика и обслуживание',
-      address: 'г. Пушкино, ул. Колхозная, д. 42',
-      executorName: 'Имя Фамилия',
-      executorId: 'ID',
-    },
-  ]);
+  // Загрузка данных с бэкенда при монтировании компонента
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const user = await authApi.getMe();
+        setCurrentUser({
+          name: user.full_name || user.username || 'Пользователь',
+          initials: (user.full_name || user.username || 'U').substring(0, 2).toUpperCase()
+        });
+      } catch (err) {
+        console.error("Error fetching current user:", err);
+      }
+
+      try {
+        const [fetchedClients, fetchedOrders] = await Promise.all([
+          dataApi.getClients(),
+          dataApi.getOrders()
+        ]);
+        setClients(fetchedClients);
+        setOrders(fetchedOrders);
+      } catch (err) {
+        console.error("Error fetching clients/orders:", err);
+      }
+
+      try {
+        const fetchedExecutors = await dataApi.getExecutors();
+        setExecutors(fetchedExecutors);
+      } catch (err: any) {
+        // Ошибка 403 означает, что мы не суперюзер - игнорируем ошибку и оставляем список пустым
+        console.log("Not a superuser or unable to fetch executors", err?.response?.data || err.message);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleEditExecutor = (executor: Executor) => {
     console.log('Редактировать исполнителя:', executor);
@@ -162,7 +93,9 @@ const MainPage: React.FC = () => {
     return `${prefix}${timestamp}-${random}`;
   };
 
-  const handleAddExecutor = (executorData: Omit<Executor, 'id'>) => {
+  const handleAddExecutor = async (executorData: Omit<Executor, 'id'>) => {
+    // В текущем бэкенде добавление пользователя-админа требует спец прав
+    // Здесь оставляем как было (пока мок-добавление для UI)
     const newExecutor: Executor = {
       ...executorData,
       id: generateId('exec-'),
@@ -170,24 +103,92 @@ const MainPage: React.FC = () => {
     setExecutors([...executors, newExecutor]);
   };
 
-  const handleAddClient = (clientData: Omit<Client, 'id'>) => {
-    const newClient: Client = {
-      ...clientData,
-      id: generateId('client-'),
-    };
-    setClients([...clients, newClient]);
+  const handleAddClient = async (clientData: Omit<Client, 'id'>) => {
+    try {
+      const newBackendClient = await dataApi.addClient(clientData);
+      const newClient: Client = {
+        id: newBackendClient.id.toString(),
+        name: `${newBackendClient.first_name || ''} ${newBackendClient.last_name || ''}`.trim() || 'Без имени',
+        contacts: newBackendClient.email || newBackendClient.phone || '',
+        comments: newBackendClient.position || newBackendClient.comments || ''
+      };
+      setClients([...clients, newClient]);
+    } catch (e) {
+      console.warn("Backend unavailable or error adding client, using mock data.", e);
+      const newClient: Client = {
+        ...clientData,
+        id: generateId('client-'),
+      };
+      setClients([...clients, newClient]);
+    }
   };
 
-  const handleAddOrder = (orderData: Omit<Order, 'id'>) => {
-    const newOrder: Order = {
+  const handleAddOrder = async (orderData: Omit<Order, 'id'> & { contacts?: string }) => {
+    // If client is new, we auto-create it
+    let finalCustomerId = orderData.customerId;
+    let finalCustomerName = orderData.customerName;
+
+    if (finalCustomerId === 'auto') {
+      const newClientData = {
+        name: orderData.customerName,
+        contacts: orderData.contacts || '',
+        comments: 'Добавлен автоматически при создании заказа'
+      };
+
+      try {
+        const newBackendClient = await dataApi.addClient(newClientData);
+        finalCustomerId = newBackendClient.id.toString();
+        const newClient: Client = {
+          id: finalCustomerId,
+          name: `${newBackendClient.first_name || ''} ${newBackendClient.last_name || ''}`.trim() || 'Без имени',
+          contacts: newBackendClient.email || newBackendClient.phone || '',
+          comments: newBackendClient.position || newBackendClient.comments || 'Добавлен автоматически при создании заказа'
+        };
+        setClients(prev => [...prev, newClient]);
+      } catch (e) {
+        console.warn("Backend unavailable or error adding client inside order, using mock data.", e);
+        finalCustomerId = generateId('client-');
+        const newClient: Client = {
+          ...newClientData,
+          id: finalCustomerId,
+        };
+        setClients(prev => [...prev, newClient]);
+      }
+    }
+
+    const orderPayload = {
       ...orderData,
-      id: generateId('ord-'),
+      customerId: finalCustomerId,
+      customerName: finalCustomerName
     };
-    setOrders([...orders, newOrder]);
+    delete orderPayload.contacts;
+
+    try {
+      const newBackendDeal = await dataApi.addOrder(orderPayload);
+      const dealDate = newBackendDeal.expected_close_date ? new Date(newBackendDeal.expected_close_date) : new Date();
+      const newOrder: Order = {
+        ...orderPayload,
+        id: newBackendDeal.id.toString(),
+        date: dealDate.toLocaleDateString(),
+      };
+      setOrders([...orders, newOrder]);
+    } catch (e) {
+      console.warn("Backend unavailable or error adding order, using mock data.", e);
+      const newOrder: Order = {
+        ...orderPayload,
+        id: generateId('order-'),
+      };
+      setOrders([...orders, newOrder]);
+    }
   };
 
   const toggleSidebar = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    window.dispatchEvent(new Event('auth:unauthorized'));
   };
 
   const handleMenuItemClick = (itemId: string) => {
@@ -217,35 +218,37 @@ const MainPage: React.FC = () => {
 
   return (
     <div className={`executors-page ${isMobile ? 'executors-page--mobile' : ''}`}>
-      <Header 
-        userName="Имя Фамилия" 
-        userInitials="ИФ" 
-        isVisible={isMobile ? true : isHeaderVisible} 
+      <Header
+        userName={currentUser?.name || "Пользователь"}
+        userInitials={currentUser?.initials || "ПУ"}
+        isVisible={isMobile ? true : isHeaderVisible}
+        onLogoutClick={handleLogout}
       />
       <div className="executors-page__layout">
         {!isMobile && (
-          <Sidebar 
+          <Sidebar
             activeItem={activeMenuItem}
             isCollapsed={isSidebarCollapsed}
             onToggle={toggleSidebar}
             onMenuItemClick={handleMenuItemClick}
+            ordersCount={orders.length}
           />
         )}
-        <main 
+        <main
           ref={mainContentRef}
           className={`executors-page__main ${isSidebarCollapsed && !isMobile ? 'executors-page__main--sidebar-collapsed' : ''} ${isMobile ? 'executors-page__main--mobile' : ''}`}
         >
           {activeMenuItem === 'clients' ? (
             <>
               {isMobile ? (
-                <ClientsTableMobile 
+                <ClientsTableMobile
                   clients={clients}
                   onEdit={handleEditClient}
                   onView={handleViewClient}
                   onAddClient={handleAddClient}
                 />
               ) : (
-                <ClientsTable 
+                <ClientsTable
                   clients={clients}
                   onEdit={handleEditClient}
                   onView={handleViewClient}
@@ -256,14 +259,14 @@ const MainPage: React.FC = () => {
           ) : activeMenuItem === 'orders' ? (
             <>
               {isMobile ? (
-                <OrdersTableMobile 
+                <OrdersTableMobile
                   orders={orders}
                   clients={clients.map(c => ({ id: c.id, name: c.name }))}
                   executors={executors.map(e => ({ id: e.id, name: e.name }))}
                   onAddOrder={handleAddOrder}
                 />
               ) : (
-                <OrdersTable 
+                <OrdersTable
                   orders={orders}
                   clients={clients.map(c => ({ id: c.id, name: c.name }))}
                   executors={executors.map(e => ({ id: e.id, name: e.name }))}
@@ -274,14 +277,14 @@ const MainPage: React.FC = () => {
           ) : activeMenuItem === 'executors' ? (
             <>
               {isMobile ? (
-                <ExecutorsTableMobile 
+                <ExecutorsTableMobile
                   executors={executors}
                   onEdit={handleEditExecutor}
                   onView={handleViewExecutor}
                   onAddExecutor={handleAddExecutor}
                 />
               ) : (
-                <ExecutorsTable 
+                <ExecutorsTable
                   executors={executors}
                   onEdit={handleEditExecutor}
                   onView={handleViewExecutor}
@@ -293,9 +296,10 @@ const MainPage: React.FC = () => {
         </main>
       </div>
       {isMobile && (
-        <BottomNavigation 
+        <BottomNavigation
           activeItem={activeMenuItem}
           onMenuItemClick={handleMenuItemClick}
+          ordersCount={orders.length}
         />
       )}
       <div className="executors-page__decoration">

@@ -15,9 +15,10 @@ interface SidebarProps {
   isCollapsed?: boolean;
   onToggle?: () => void;
   onMenuItemClick?: (itemId: string) => void;
+  ordersCount?: number;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ activeItem, isCollapsed = false, onToggle, onMenuItemClick }) => {
+const Sidebar: React.FC<SidebarProps> = ({ activeItem, isCollapsed = false, onToggle, onMenuItemClick, ordersCount }) => {
   const menuItems: SidebarItem[] = [
     {
       id: 'clients',
@@ -33,7 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeItem, isCollapsed = false, onTo
       id: 'orders',
       label: 'Заказы',
       icon: <FiFileText />,
-      badge: 24,
+      badge: ordersCount,
     },
     {
       id: 'statistics',
@@ -56,7 +57,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeItem, isCollapsed = false, onTo
 
   return (
     <aside className={`sidebar ${isCollapsed ? 'sidebar--collapsed' : ''}`}>
-      <button 
+      <button
         className="sidebar__toggle"
         onClick={onToggle}
         aria-label={isCollapsed ? 'Развернуть меню' : 'Свернуть меню'}
@@ -78,12 +79,12 @@ const Sidebar: React.FC<SidebarProps> = ({ activeItem, isCollapsed = false, onTo
                 {!isCollapsed && (
                   <>
                     <span className="sidebar__label">{item.label}</span>
-                    {item.badge && (
+                    {!!item.badge && (
                       <span className="sidebar__badge">{item.badge}</span>
                     )}
                   </>
                 )}
-                {isCollapsed && item.badge && (
+                {isCollapsed && !!item.badge && (
                   <span className="sidebar__badge sidebar__badge--collapsed">{item.badge}</span>
                 )}
               </a>

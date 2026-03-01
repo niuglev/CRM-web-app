@@ -7,7 +7,7 @@ import './AddOrderModal.scss';
 interface AddOrderModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (order: Omit<Order, 'id'>) => void;
+  onSubmit: (order: Omit<Order, 'id'> & { contacts?: string }) => void;
   clients?: Array<{ id: string; name: string }>;
   executors?: Array<{ id: string; name: string }>;
 }
@@ -53,7 +53,7 @@ const AddOrderModal: React.FC<AddOrderModalProps> = ({
     }
 
     const trimmedContacts = contacts.trim();
-    
+
     // Проверка на минимальную длину
     if (trimmedContacts.length < 3) {
       return 'Контакт слишком короткий (минимум 3 символа)';
@@ -63,7 +63,7 @@ const AddOrderModal: React.FC<AddOrderModalProps> = ({
     const phoneRegex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const messengerRegex = /^(tg\.|@|wa\(|wa\.|viber\.|telegram\.)/i;
-    
+
     const isPhone = phoneRegex.test(trimmedContacts);
     const isEmail = emailRegex.test(trimmedContacts);
     const isMessenger = messengerRegex.test(trimmedContacts);
@@ -96,7 +96,7 @@ const AddOrderModal: React.FC<AddOrderModalProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const contactsError = validateContacts(formData.contacts);
-    
+
     if (contactsError) {
       setErrors({ contacts: contactsError });
       return;
@@ -119,6 +119,7 @@ const AddOrderModal: React.FC<AddOrderModalProps> = ({
         address: formData.address,
         executorId: formData.executorId || 'auto',
         executorName: formData.executorName || 'Не назначен',
+        contacts: formData.contacts,
       });
       handleClose();
     }

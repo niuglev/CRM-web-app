@@ -5,9 +5,10 @@ import './BottomNavigation.scss';
 interface BottomNavigationProps {
   activeItem?: string;
   onMenuItemClick?: (itemId: string) => void;
+  ordersCount?: number;
 }
 
-const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeItem, onMenuItemClick }) => {
+const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeItem, onMenuItemClick, ordersCount }) => {
   const menuItems = [
     {
       id: 'clients',
@@ -23,7 +24,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeItem, onMenuI
       id: 'orders',
       label: 'Заказы',
       icon: <FiFileText />,
-      badge: 24,
+      badge: ordersCount,
     },
     {
       id: 'statistics',
@@ -54,7 +55,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeItem, onMenuI
         >
           <span className="bottom-nav__icon">{item.icon}</span>
           <span className="bottom-nav__label">{item.label}</span>
-          {item.badge && (
+          {!!item.badge && (
             <span className="bottom-nav__badge">{item.badge}</span>
           )}
         </button>
