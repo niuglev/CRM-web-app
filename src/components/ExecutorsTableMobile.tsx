@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FiEdit3, FiEye, FiPlus, FiSearch, FiPhone } from 'react-icons/fi';
+import { FiEdit3, FiEye, FiPlus, FiSearch, FiPhone, FiTrash2 } from 'react-icons/fi';
 import type { Executor } from '../types';
 import AddExecutorModal from './AddExecutorModal';
 import './ExecutorsTableMobile.scss';
@@ -8,10 +8,11 @@ interface ExecutorsTableMobileProps {
   executors: Executor[];
   onEdit: (executor: Executor) => void;
   onView: (executor: Executor) => void;
+  onDelete: (executor: Executor) => void;
   onAddExecutor?: (executor: Omit<Executor, 'id'>) => void;
 }
 
-const ExecutorsTableMobile: React.FC<ExecutorsTableMobileProps> = ({ executors, onEdit, onView, onAddExecutor }) => {
+const ExecutorsTableMobile: React.FC<ExecutorsTableMobileProps> = ({ executors, onEdit, onView, onDelete, onAddExecutor }) => {
   const [selectedFilter, setSelectedFilter] = useState<'corporate' | 'private'>('corporate');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedExecutor, setSelectedExecutor] = useState<string | null>(null);
@@ -45,7 +46,7 @@ const ExecutorsTableMobile: React.FC<ExecutorsTableMobileProps> = ({ executors, 
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <button 
+          <button
             className="executors-table-mobile__btn executors-table-mobile__btn--primary"
             onClick={() => setIsAddModalOpen(true)}
           >
@@ -80,9 +81,8 @@ const ExecutorsTableMobile: React.FC<ExecutorsTableMobileProps> = ({ executors, 
             {filteredExecutors.map((executor) => (
               <div
                 key={executor.id}
-                className={`executors-table-mobile__card ${
-                  selectedExecutor === executor.id ? 'executors-table-mobile__card--selected' : ''
-                }`}
+                className={`executors-table-mobile__card ${selectedExecutor === executor.id ? 'executors-table-mobile__card--selected' : ''
+                  }`}
                 onClick={() => setSelectedExecutor(selectedExecutor === executor.id ? null : executor.id)}
               >
                 <div className="executors-table-mobile__card-header">
@@ -110,6 +110,16 @@ const ExecutorsTableMobile: React.FC<ExecutorsTableMobileProps> = ({ executors, 
                       title="Просмотр"
                     >
                       <FiEye />
+                    </button>
+                    <button
+                      className="executors-table-mobile__action-btn executors-table-mobile__action-btn--delete"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete(executor);
+                      }}
+                      title="Удалить"
+                    >
+                      <FiTrash2 />
                     </button>
                   </div>
                 </div>

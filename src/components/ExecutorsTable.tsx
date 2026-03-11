@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FiEdit3, FiEye, FiPlus, FiSearch } from 'react-icons/fi';
+import { FiEdit3, FiEye, FiPlus, FiSearch, FiTrash2 } from 'react-icons/fi';
 import type { Executor } from '../types';
 import AddExecutorModal from './AddExecutorModal';
 import './ExecutorsTable.scss';
@@ -8,10 +8,11 @@ interface ExecutorsTableProps {
   executors: Executor[];
   onEdit: (executor: Executor) => void;
   onView: (executor: Executor) => void;
+  onDelete: (executor: Executor) => void;
   onAddExecutor?: (executor: Omit<Executor, 'id'>) => void;
 }
 
-const ExecutorsTable: React.FC<ExecutorsTableProps> = ({ executors, onEdit, onView, onAddExecutor }) => {
+const ExecutorsTable: React.FC<ExecutorsTableProps> = ({ executors, onEdit, onView, onDelete, onAddExecutor }) => {
   const [selectedFilter, setSelectedFilter] = useState<'corporate' | 'private'>('corporate');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedExecutor, setSelectedExecutor] = useState<string | null>(executors[0]?.id || null);
@@ -49,7 +50,7 @@ const ExecutorsTable: React.FC<ExecutorsTableProps> = ({ executors, onEdit, onVi
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <button 
+          <button
             className="executors-table__btn executors-table__btn--primary"
             onClick={() => setIsAddModalOpen(true)}
           >
@@ -135,6 +136,16 @@ const ExecutorsTable: React.FC<ExecutorsTableProps> = ({ executors, onEdit, onVi
                         title="Просмотр"
                       >
                         <FiEye />
+                      </button>
+                      <button
+                        className="executors-table__action-btn executors-table__action-btn--delete"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDelete(executor);
+                        }}
+                        title="Удалить"
+                      >
+                        <FiTrash2 />
                       </button>
                     </div>
                   </td>

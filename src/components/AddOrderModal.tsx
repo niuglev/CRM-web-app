@@ -7,9 +7,10 @@ import './AddOrderModal.scss';
 interface AddOrderModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (order: Omit<Order, 'id'> & { contacts?: string }) => void;
+  onSubmit: (order: Omit<Order, 'id'> & { customerContacts?: string; executorContacts?: string }) => void;
   clients?: Array<{ id: string; name: string }>;
   executors?: Array<{ id: string; name: string }>;
+  initialData?: Order | null;
 }
 
 const AddOrderModal: React.FC<AddOrderModalProps> = ({
@@ -18,20 +19,73 @@ const AddOrderModal: React.FC<AddOrderModalProps> = ({
   onSubmit,
   clients = [],
   executors = [],
+  initialData,
 }) => {
-  const [clientType, setClientType] = useState<'new' | 'existing'>('new');
+  const [clientType, setClientType] = useState<'new' | 'existing'>('existing');
+  const [executorType, setExecutorType] = useState<'new' | 'existing'>('existing');
   const [formData, setFormData] = useState({
     date: '',
     time: '',
     customerId: '',
     customerName: '',
-    contacts: '',
+    customerContacts: '',
     description: '',
     address: '',
     executorId: '',
     executorName: '',
+    executorContacts: '',
   });
-  const [errors, setErrors] = useState<{ contacts?: string }>({});
+  const [errors, setErrors] = useState<{ customerContacts?: string; executorContacts?: string }>({});
+
+  React.useEffect(() => {
+    if (initialData) {
+      // Parse date "DD/MM/YYYY" to "YYYY-MM-DD" for type="date"
+      let parsedDate = '';
+      if (initialData.date && initialData.date.includes('/')) {
+        const [day, month, year] = initialData.date.split('/');
+        if (day && month && year) {
+          parsedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+        }
+      }
+
+      // Parse time if exists "HH/MM" to "HH:MM"
+      let parsedTime = '';
+      if (initialData.time) {
+        parsedTime = initialData.time.replace('/', ':');
+      }
+
+      setClientType('existing');
+      setExecutorType(initialData.executorId && initialData.executorId !== 'auto' ? 'existing' : 'new');
+      setFormData({
+        date: parsedDate,
+        time: parsedTime,
+        customerId: initialData.customerId,
+        customerName: initialData.customerName,
+        customerContacts: '', // We don't have contacts in Order interface currently
+        description: initialData.description,
+        address: initialData.address,
+        executorId: initialData.executorId || '',
+        executorName: initialData.executorName || '',
+        executorContacts: '',
+      });
+    } else {
+      setClientType('existing');
+      setExecutorType('existing');
+      setFormData({
+        date: '',
+        time: '',
+        customerId: '',
+        customerName: '',
+        customerContacts: '',
+        description: '',
+        address: '',
+        executorId: '',
+        executorName: '',
+        executorContacts: '',
+      });
+    }
+    setErrors({});
+  }, [initialData, isOpen]);
 
   const formatDate = (dateString: string): string => {
     if (!dateString) return '';
@@ -78,34 +132,68 @@ const AddOrderModal: React.FC<AddOrderModalProps> = ({
     return undefined;
   };
 
-  const handleContactsChange = (value: string) => {
-    setFormData({ ...formData, contacts: value });
-    // Очищаем ошибку при вводе
-    if (errors.contacts) {
-      setErrors({ ...errors, contacts: undefined });
+  const handleCustomerContactsChange = (value: string) => {
+    setFormData({ ...formData, customerContacts: value });
+    if (errors.customerContacts) {
+      setErrors({ ...errors, customerContacts: undefined });
     }
   };
 
-  const handleContactsBlur = () => {
-    const error = validateContacts(formData.contacts);
+  const handleCustomerContactsBlur = () => {
+    const error = validateContacts(formData.customerContacts);
     if (error) {
-      setErrors({ ...errors, contacts: error });
+      setErrors({ ...errors, customerContacts: error });
+    }
+  };
+
+  const handleExecutorContactsChange = (value: string) => {
+    setFormData({ ...formData, executorContacts: value });
+    if (errors.executorContacts) {
+      setErrors({ ...errors, executorContacts: undefined });
+    }
+  };
+
+  const handleExecutorContactsBlur = () => {
+    if (!formData.executorContacts) {
+      if (errors.executorContacts) setErrors({ ...errors, executorContacts: undefined });
+      return;
+    }
+    const error = validateContacts(formData.executorContacts);
+    if (error) {
+      setErrors({ ...errors, executorContacts: error });
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const contactsError = validateContacts(formData.contacts);
 
-    if (contactsError) {
-      setErrors({ contacts: contactsError });
+    let hasError = false;
+    const newErrors: { customerContacts?: string; executorContacts?: string } = {};
+
+    if (clientType === 'new') {
+      const cError = validateContacts(formData.customerContacts);
+      if (cError) {
+        newErrors.customerContacts = cError;
+        hasError = true;
+      }
+    }
+
+    if (executorType === 'new' && formData.executorContacts) {
+      const eError = validateContacts(formData.executorContacts);
+      if (eError) {
+        newErrors.executorContacts = eError;
+        hasError = true;
+      }
+    }
+
+    if (hasError) {
+      setErrors(newErrors);
       return;
     }
 
     if (
       formData.customerName &&
       formData.address &&
-      formData.contacts &&
       formData.date &&
       formData.time &&
       formData.description
@@ -119,24 +207,27 @@ const AddOrderModal: React.FC<AddOrderModalProps> = ({
         address: formData.address,
         executorId: formData.executorId || 'auto',
         executorName: formData.executorName || 'Не назначен',
-        contacts: formData.contacts,
+        customerContacts: clientType === 'new' ? formData.customerContacts : undefined,
+        executorContacts: executorType === 'new' ? formData.executorContacts : undefined,
       });
       handleClose();
     }
   };
 
   const handleClose = () => {
-    setClientType('new');
+    setClientType('existing');
+    setExecutorType('existing');
     setFormData({
       date: '',
       time: '',
       customerId: '',
       customerName: '',
-      contacts: '',
+      customerContacts: '',
       description: '',
       address: '',
       executorId: '',
       executorName: '',
+      executorContacts: '',
     });
     setErrors({});
     onClose();
@@ -149,8 +240,15 @@ const AddOrderModal: React.FC<AddOrderModalProps> = ({
     }
   };
 
+  const handleExecutorSelect = (executorId: string) => {
+    const executor = executors.find((e) => e.id === executorId);
+    if (executor) {
+      setFormData({ ...formData, executorId: executor.id, executorName: executor.name });
+    }
+  };
+
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title="Новый заказ">
+    <Modal isOpen={isOpen} onClose={handleClose} title={initialData ? "Редактировать заказ" : "Новый заказ"}>
       <form className="add-order-modal" onSubmit={handleSubmit}>
         <div className="add-order-modal__client-type">
           <label className="add-order-modal__radio">
@@ -193,46 +291,116 @@ const AddOrderModal: React.FC<AddOrderModalProps> = ({
             </select>
           </div>
         ) : (
-          <div className="add-order-modal__field">
-            <label className="add-order-modal__label">Имя клиента</label>
-            <input
-              type="text"
-              className="add-order-modal__input"
-              placeholder="Введите имя здесь"
-              value={formData.customerName}
-              onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
-              required
-            />
+          <div className="add-order-modal__row">
+            <div className="add-order-modal__field add-order-modal__field--half">
+              <label className="add-order-modal__label">Имя клиента</label>
+              <input
+                type="text"
+                className="add-order-modal__input"
+                placeholder="Введите имя клиента"
+                value={formData.customerName}
+                onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
+                required
+              />
+            </div>
+            <div className="add-order-modal__field add-order-modal__field--half">
+              <label className="add-order-modal__label">Контакты клиента</label>
+              <input
+                type="text"
+                className={`add-order-modal__input ${errors.customerContacts ? 'add-order-modal__input--error' : ''}`}
+                placeholder="Телефон или email"
+                value={formData.customerContacts}
+                onChange={(e) => handleCustomerContactsChange(e.target.value)}
+                onBlur={handleCustomerContactsBlur}
+                required
+              />
+              {errors.customerContacts && (
+                <span className="add-order-modal__error">{errors.customerContacts}</span>
+              )}
+            </div>
           </div>
         )}
 
-        <div className="add-order-modal__row">
-          <div className="add-order-modal__field add-order-modal__field--half">
-            <label className="add-order-modal__label">Адрес</label>
+        {/* --- EXECUTOR SECTION --- */}
+        <div className="add-order-modal__client-type" style={{ marginTop: '16px' }}>
+          <label className="add-order-modal__radio">
             <input
-              type="text"
+              type="radio"
+              name="executorType"
+              value="new"
+              checked={executorType === 'new'}
+              onChange={(e) => setExecutorType(e.target.value as 'new' | 'existing')}
+            />
+            <span className="add-order-modal__radio-label">Новый исполнитель</span>
+          </label>
+          <label className="add-order-modal__radio">
+            <input
+              type="radio"
+              name="executorType"
+              value="existing"
+              checked={executorType === 'existing'}
+              onChange={(e) => setExecutorType(e.target.value as 'new' | 'existing')}
+            />
+            <span className="add-order-modal__radio-label">Существующий исполнитель</span>
+          </label>
+        </div>
+
+        {executorType === 'existing' && executors.length > 0 ? (
+          <div className="add-order-modal__field">
+            <label className="add-order-modal__label">Исполнитель</label>
+            <select
               className="add-order-modal__input"
-              placeholder="Адрес"
-              value={formData.address}
-              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              required
-            />
+              value={formData.executorId}
+              onChange={(e) => handleExecutorSelect(e.target.value)}
+            >
+              <option value="">Выберите исполнителя</option>
+              {executors.map((exec) => (
+                <option key={exec.id} value={exec.id}>
+                  {exec.name} (id-{exec.id})
+                </option>
+              ))}
+            </select>
           </div>
-          <div className="add-order-modal__field add-order-modal__field--half">
-            <label className="add-order-modal__label">Контакты</label>
-            <input
-              type="text"
-              className={`add-order-modal__input ${errors.contacts ? 'add-order-modal__input--error' : ''}`}
-              placeholder="Номер телефона"
-              value={formData.contacts}
-              onChange={(e) => handleContactsChange(e.target.value)}
-              onBlur={handleContactsBlur}
-              required
-            />
-            {errors.contacts && (
-              <span className="add-order-modal__error">{errors.contacts}</span>
-            )}
+        ) : (
+          <div className="add-order-modal__row">
+            <div className="add-order-modal__field add-order-modal__field--half">
+              <label className="add-order-modal__label">Имя исполнителя</label>
+              <input
+                type="text"
+                className="add-order-modal__input"
+                placeholder="Имя исполнителя (необязательно)"
+                value={formData.executorName}
+                onChange={(e) => setFormData({ ...formData, executorName: e.target.value, executorId: '' })}
+              />
+            </div>
+            <div className="add-order-modal__field add-order-modal__field--half">
+              <label className="add-order-modal__label">Контакты исполнителя</label>
+              <input
+                type="text"
+                className={`add-order-modal__input ${errors.executorContacts ? 'add-order-modal__input--error' : ''}`}
+                placeholder="Телефон или email (необязательно)"
+                value={formData.executorContacts}
+                onChange={(e) => handleExecutorContactsChange(e.target.value)}
+                onBlur={handleExecutorContactsBlur}
+              />
+              {errors.executorContacts && (
+                <span className="add-order-modal__error">{errors.executorContacts}</span>
+              )}
+            </div>
           </div>
+        )}
+        {/* --- END EXECUTOR SECTION --- */}
+
+        <div className="add-order-modal__field">
+          <label className="add-order-modal__label">Адрес</label>
+          <input
+            type="text"
+            className="add-order-modal__input"
+            placeholder="Адрес"
+            value={formData.address}
+            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+            required
+          />
         </div>
 
         <div className="add-order-modal__row">
@@ -271,8 +439,8 @@ const AddOrderModal: React.FC<AddOrderModalProps> = ({
 
         <div className="add-order-modal__actions">
           <button type="submit" className="add-order-modal__btn add-order-modal__btn--primary">
-            <FiPlus className="add-order-modal__btn-icon" />
-            <span>Добавить заказ</span>
+            {!initialData && <FiPlus className="add-order-modal__btn-icon" />}
+            <span>{initialData ? "Сохранить изменения" : "Добавить заказ"}</span>
           </button>
         </div>
       </form>

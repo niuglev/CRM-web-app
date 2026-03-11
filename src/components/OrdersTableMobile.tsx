@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { FiPlus, FiSearch, FiCalendar, FiMapPin, FiUser } from 'react-icons/fi';
+import { FiPlus, FiSearch, FiCalendar, FiMapPin, FiUser, FiEdit3, FiTrash2 } from 'react-icons/fi';
 import type { Order } from '../types';
 import AddOrderModal from './AddOrderModal';
 import './OrdersTableMobile.scss';
@@ -9,9 +9,11 @@ interface OrdersTableMobileProps {
   clients?: Array<{ id: string; name: string }>;
   executors?: Array<{ id: string; name: string }>;
   onAddOrder?: (order: Omit<Order, 'id'>) => void;
+  onEdit: (order: Order) => void;
+  onDelete: (order: Order) => void;
 }
 
-const OrdersTableMobile: React.FC<OrdersTableMobileProps> = ({ orders, clients = [], executors = [], onAddOrder }) => {
+const OrdersTableMobile: React.FC<OrdersTableMobileProps> = ({ orders, clients = [], executors = [], onAddOrder, onEdit, onDelete }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -53,7 +55,7 @@ const OrdersTableMobile: React.FC<OrdersTableMobileProps> = ({ orders, clients =
               onChange={(event) => setSearchQuery(event.target.value)}
             />
           </div>
-          <button 
+          <button
             className="orders-table-mobile__btn orders-table-mobile__btn--primary"
             onClick={() => setIsAddModalOpen(true)}
           >
@@ -73,17 +75,40 @@ const OrdersTableMobile: React.FC<OrdersTableMobileProps> = ({ orders, clients =
             {filteredOrders.map((order) => (
               <div
                 key={order.id}
-                className={`orders-table-mobile__card ${
-                  selectedOrder === order.id ? 'orders-table-mobile__card--selected' : ''
-                }`}
+                className={`orders-table-mobile__card ${selectedOrder === order.id ? 'orders-table-mobile__card--selected' : ''
+                  }`}
                 onClick={() => setSelectedOrder(selectedOrder === order.id ? null : order.id)}
               >
                 <div className="orders-table-mobile__card-header">
-                  <div className="orders-table-mobile__order-number">{order.id}</div>
-                  <div className="orders-table-mobile__datetime">
-                    <FiCalendar className="orders-table-mobile__datetime-icon" />
-                    <span>{order.date}</span>
-                    <span>{order.time}</span>
+                  <div className="orders-table-mobile__header-info">
+                    <div className="orders-table-mobile__order-number">{order.id}</div>
+                    <div className="orders-table-mobile__datetime">
+                      <FiCalendar className="orders-table-mobile__datetime-icon" />
+                      <span>{order.date}</span>
+                      <span>{order.time}</span>
+                    </div>
+                  </div>
+                  <div className="orders-table-mobile__actions">
+                    <button
+                      className="orders-table-mobile__action-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEdit(order);
+                      }}
+                      title="Редактировать"
+                    >
+                      <FiEdit3 />
+                    </button>
+                    <button
+                      className="orders-table-mobile__action-btn orders-table-mobile__action-btn--delete"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete(order);
+                      }}
+                      title="Удалить"
+                    >
+                      <FiTrash2 />
+                    </button>
                   </div>
                 </div>
 

@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  max-height: 700px; // Максимальная высота таблицы
+  max-height: 1200px; // Максимальная высота таблицы
 
   &__header {
     display: flex;
@@ -153,7 +153,7 @@
     overflow-y: auto;
     flex: 1;
     min-height: 0;
-    max-height: 600px; // Фиксированная максимальная высота для прокрутки
+    max-height: 1100px; // Фиксированная максимальная высота для прокрутки
   }
 
   &__table {
@@ -181,7 +181,9 @@
 
     &--actions {
       text-align: center;
-      width: 120px;
+      width: 160px;
+      padding-left: 16px;
+      padding-right: 16px;
     }
   }
 
@@ -217,6 +219,8 @@
 
     &--actions {
       text-align: center;
+      padding-left: 16px;
+      padding-right: 16px;
     }
   }
 
@@ -334,4 +338,3 @@
     display: none;
   }
 }
-

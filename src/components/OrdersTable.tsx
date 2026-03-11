@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { FiPlus, FiSearch } from 'react-icons/fi';
+import { FiPlus, FiSearch, FiEdit3, FiTrash2 } from 'react-icons/fi';
 import type { Order } from '../types';
 import AddOrderModal from './AddOrderModal';
 import './OrdersTable.scss';
@@ -9,9 +9,11 @@ interface OrdersTableProps {
   clients?: Array<{ id: string; name: string }>;
   executors?: Array<{ id: string; name: string }>;
   onAddOrder?: (order: Omit<Order, 'id'>) => void;
+  onEdit: (order: Order) => void;
+  onDelete: (order: Order) => void;
 }
 
-const OrdersTable: React.FC<OrdersTableProps> = ({ orders, clients = [], executors = [], onAddOrder }) => {
+const OrdersTable: React.FC<OrdersTableProps> = ({ orders, clients = [], executors = [], onAddOrder, onEdit, onDelete }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<string | null>(orders[0]?.id ?? null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -55,7 +57,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ orders, clients = [], executo
               onChange={(event) => setSearchQuery(event.target.value)}
             />
           </div>
-          <button 
+          <button
             className="orders-table__btn orders-table__btn--primary"
             onClick={() => setIsAddModalOpen(true)}
           >
@@ -75,12 +77,13 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ orders, clients = [], executo
               <th className="orders-table__header-cell">Описание заказа</th>
               <th className="orders-table__header-cell">Адрес</th>
               <th className="orders-table__header-cell">Исполнитель</th>
+              <th className="orders-table__header-cell orders-table__header-cell--actions">Действия</th>
             </tr>
           </thead>
           <tbody>
             {filteredOrders.length === 0 ? (
               <tr>
-                <td colSpan={6} className="orders-table__empty">
+                <td colSpan={7} className="orders-table__empty">
                   <div className="orders-table__empty-message">Заказы не найдены</div>
                 </td>
               </tr>
@@ -88,9 +91,8 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ orders, clients = [], executo
               filteredOrders.map((order) => (
                 <tr
                   key={order.id}
-                  className={`orders-table__row ${
-                    selectedOrder === order.id ? 'orders-table__row--selected' : ''
-                  }`}
+                  className={`orders-table__row ${selectedOrder === order.id ? 'orders-table__row--selected' : ''
+                    }`}
                   onClick={() => setSelectedOrder(order.id)}
                 >
                   <td className="orders-table__cell">
@@ -122,6 +124,30 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ orders, clients = [], executo
                     <div className="orders-table__person">
                       <div className="orders-table__person-name">{order.executorName}</div>
                       <div className="orders-table__person-id">id-{order.executorId}</div>
+                    </div>
+                  </td>
+                  <td className="orders-table__cell orders-table__cell--actions">
+                    <div className="orders-table__actions-cell">
+                      <button
+                        className="orders-table__action-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEdit(order);
+                        }}
+                        title="Редактировать"
+                      >
+                        <FiEdit3 />
+                      </button>
+                      <button
+                        className="orders-table__action-btn orders-table__action-btn--delete"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDelete(order);
+                        }}
+                        title="Удалить"
+                      >
+                        <FiTrash2 />
+                      </button>
                     </div>
                   </td>
                 </tr>

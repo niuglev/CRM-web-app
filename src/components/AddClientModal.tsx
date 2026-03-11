@@ -8,14 +8,32 @@ interface AddClientModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (client: Omit<Client, 'id'>) => void;
+  initialData?: Client | null;
 }
 
-const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSubmit }) => {
+const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSubmit, initialData }) => {
   const [formData, setFormData] = useState({
     name: '',
     contacts: '',
     comments: '',
   });
+
+  React.useEffect(() => {
+    if (initialData) {
+      setFormData({
+        name: initialData.name,
+        contacts: initialData.contacts,
+        comments: initialData.comments,
+      });
+    } else {
+      setFormData({
+        name: '',
+        contacts: '',
+        comments: '',
+      });
+    }
+    setErrors({});
+  }, [initialData, isOpen]);
   const [errors, setErrors] = useState<{ contacts?: string }>({});
 
   const validateContacts = (contacts: string): string | undefined => {
@@ -24,7 +42,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSubm
     }
 
     const trimmedContacts = contacts.trim();
-    
+
     // Проверка на минимальную длину
     if (trimmedContacts.length < 3) {
       return 'Контакт слишком короткий (минимум 3 символа)';
@@ -34,7 +52,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSubm
     const phoneRegex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const messengerRegex = /^(tg\.|@|wa\(|wa\.|viber\.|telegram\.)/i;
-    
+
     const isPhone = phoneRegex.test(trimmedContacts);
     const isEmail = emailRegex.test(trimmedContacts);
     const isMessenger = messengerRegex.test(trimmedContacts);
@@ -67,7 +85,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSubm
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const contactsError = validateContacts(formData.contacts);
-    
+
     if (contactsError) {
       setErrors({ contacts: contactsError });
       return;
@@ -90,7 +108,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSubm
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title="Добавить клиента">
+    <Modal isOpen={isOpen} onClose={handleClose} title={initialData ? "Редактировать клиента" : "Добавить клиента"}>
       <form className="add-client-modal" onSubmit={handleSubmit}>
         <div className="add-client-modal__field">
           <label className="add-client-modal__label">
@@ -142,7 +160,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSubm
 
         <div className="add-client-modal__actions">
           <button type="submit" className="add-client-modal__btn add-client-modal__btn--primary">
-            Добавить клиента
+            {initialData ? "Сохранить изменения" : "Добавить клиента"}
           </button>
         </div>
       </form>

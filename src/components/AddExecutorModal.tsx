@@ -8,14 +8,32 @@ interface AddExecutorModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (executor: Omit<Executor, 'id'>) => void;
+  initialData?: Executor | null;
 }
 
-const AddExecutorModal: React.FC<AddExecutorModalProps> = ({ isOpen, onClose, onSubmit }) => {
+const AddExecutorModal: React.FC<AddExecutorModalProps> = ({ isOpen, onClose, onSubmit, initialData }) => {
   const [formData, setFormData] = useState({
     name: '',
     contacts: '',
     comments: '',
   });
+
+  React.useEffect(() => {
+    if (initialData) {
+      setFormData({
+        name: initialData.name,
+        contacts: initialData.contacts,
+        comments: initialData.comments,
+      });
+    } else {
+      setFormData({
+        name: '',
+        contacts: '',
+        comments: '',
+      });
+    }
+    setErrors({});
+  }, [initialData, isOpen]);
   const [errors, setErrors] = useState<{ contacts?: string }>({});
 
   const validateContacts = (contacts: string): string | undefined => {
@@ -24,7 +42,7 @@ const AddExecutorModal: React.FC<AddExecutorModalProps> = ({ isOpen, onClose, on
     }
 
     const trimmedContacts = contacts.trim();
-    
+
     // Проверка на минимальную длину
     if (trimmedContacts.length < 3) {
       return 'Контакт слишком короткий (минимум 3 символа)';
@@ -34,7 +52,7 @@ const AddExecutorModal: React.FC<AddExecutorModalProps> = ({ isOpen, onClose, on
     const phoneRegex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const messengerRegex = /^(tg\.|@|wa\(|wa\.|viber\.|telegram\.)/i;
-    
+
     const isPhone = phoneRegex.test(trimmedContacts);
     const isEmail = emailRegex.test(trimmedContacts);
     const isMessenger = messengerRegex.test(trimmedContacts);
@@ -67,7 +85,7 @@ const AddExecutorModal: React.FC<AddExecutorModalProps> = ({ isOpen, onClose, on
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const contactsError = validateContacts(formData.contacts);
-    
+
     if (contactsError) {
       setErrors({ contacts: contactsError });
       return;
@@ -90,7 +108,7 @@ const AddExecutorModal: React.FC<AddExecutorModalProps> = ({ isOpen, onClose, on
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title="Добавить исполнителя">
+    <Modal isOpen={isOpen} onClose={handleClose} title={initialData ? "Редактировать исполнителя" : "Добавить исполнителя"}>
       <form className="add-executor-modal" onSubmit={handleSubmit}>
         <div className="add-executor-modal__field">
           <label className="add-executor-modal__label">
@@ -142,7 +160,7 @@ const AddExecutorModal: React.FC<AddExecutorModalProps> = ({ isOpen, onClose, on
 
         <div className="add-executor-modal__actions">
           <button type="submit" className="add-executor-modal__btn add-executor-modal__btn--primary">
-            Добавить исполнителя
+            {initialData ? "Сохранить изменения" : "Добавить исполнителя"}
           </button>
         </div>
       </form>

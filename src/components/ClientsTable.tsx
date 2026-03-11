@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FiEdit3, FiEye, FiPlus, FiSearch } from 'react-icons/fi';
+import { FiEdit3, FiEye, FiPlus, FiSearch, FiTrash2 } from 'react-icons/fi';
 import type { Client } from '../types';
 import AddClientModal from './AddClientModal';
 import './ClientsTable.scss';
@@ -8,10 +8,11 @@ interface ClientsTableProps {
   clients: Client[];
   onEdit: (client: Client) => void;
   onView: (client: Client) => void;
+  onDelete: (client: Client) => void;
   onAddClient?: (client: Omit<Client, 'id'>) => void;
 }
 
-const ClientsTable: React.FC<ClientsTableProps> = ({ clients, onEdit, onView, onAddClient }) => {
+const ClientsTable: React.FC<ClientsTableProps> = ({ clients, onEdit, onView, onDelete, onAddClient }) => {
   const [selectedFilter, setSelectedFilter] = useState<'corporate' | 'private'>('corporate');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClient, setSelectedClient] = useState<string | null>(clients[0]?.id || null);
@@ -49,7 +50,7 @@ const ClientsTable: React.FC<ClientsTableProps> = ({ clients, onEdit, onView, on
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <button 
+          <button
             className="clients-table__btn clients-table__btn--primary"
             onClick={() => setIsAddModalOpen(true)}
           >
@@ -135,6 +136,16 @@ const ClientsTable: React.FC<ClientsTableProps> = ({ clients, onEdit, onView, on
                         title="Просмотр"
                       >
                         <FiEye />
+                      </button>
+                      <button
+                        className="clients-table__action-btn clients-table__action-btn--delete"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDelete(client);
+                        }}
+                        title="Удалить"
+                      >
+                        <FiTrash2 />
                       </button>
                     </div>
                   </td>
