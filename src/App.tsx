@@ -2,8 +2,11 @@ import { useState, useEffect } from 'react'
 import MainPage from './components/ExecutorsPage'
 import LoginPage from './components/LoginPage'
 import './App.css'
+import { useTranslation } from 'react-i18next'
 
 function App() {
+
+
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
     !!localStorage.getItem('access_token')
   );

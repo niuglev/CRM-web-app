@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { FiX } from 'react-icons/fi';
 import './Modal.scss';
+import { useTranslation } from 'react-i18next';
 
 interface ModalProps {
   isOpen: boolean;
@@ -10,6 +11,8 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+    const { t } = useTranslation();
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -58,7 +61,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
           <button 
             className="modal__close" 
             onClick={onClose} 
-            aria-label="Закрыть"
+                      aria-label={t('closeMenu')}
             type="button"
           >
             <FiX />

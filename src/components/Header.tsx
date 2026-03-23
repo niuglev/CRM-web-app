@@ -3,6 +3,7 @@ import { FiSearch, FiBell, FiChevronDown, FiMenu, FiX } from 'react-icons/fi';
 import UserDropdown from './UserDropdown';
 import SystemNotification from './SystemNotification';
 import './Header.scss';
+import { useTranslation } from 'react-i18next';
 
 export interface HeaderProps {
     userName: string;
@@ -27,8 +28,9 @@ const Header: React.FC<HeaderProps> = ({
     onMenuToggle,
     isMenuOpen = false,
     showSystemNotification = false,
-    notificationMessage = 'Система была обновлена'
 }) => {
+    const { t } = useTranslation();
+    const notificationMessage = t('systemReload');
     const [isScrolled, setIsScrolled] = useState(false);
     const [showNotification, setShowNotification] = useState(showSystemNotification);
     const [notificationCount, setNotificationCount] = useState(0);
@@ -81,6 +83,10 @@ const Header: React.FC<HeaderProps> = ({
         onMenuToggle?.();
     }, [onMenuToggle]);
 
+
+    const { t } = useTranslation();
+
+
     return (
         <>
             <header className={`header ${isScrolled ? 'header--scrolled' : ''} ${!isVisible ? 'header--hidden' : ''}`}>
@@ -89,7 +95,7 @@ const Header: React.FC<HeaderProps> = ({
                         <button
                             className="header__menu-toggle"
                             onClick={handleMenuToggle}
-                            aria-label={isMenuOpen ? 'Закрыть меню' : 'Открыть меню'}
+                            aria-label={isMenuOpen ? t('closeMenu') : t('openMenu')}
                             aria-expanded={isMenuOpen}
                         >
                             {isMenuOpen ? <FiX /> : <FiMenu />}
@@ -102,9 +108,9 @@ const Header: React.FC<HeaderProps> = ({
                             <FiSearch className="header__search-icon" />
                             <input
                                 type="text"
-                                placeholder="Найдите клиента или заказ..."
+                                placeholder={t('searchPlaceholder')}
                                 className="header__search-input"
-                                aria-label="Поиск клиентов и заказов"
+                                aria-label={t('header_search_input')}
                             />
                         </div>
                     </div>
