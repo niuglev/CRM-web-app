@@ -58,8 +58,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                     {!isLogin && (
                         <>
                             <div className="login-page__form-group">
-                                <label>Ваше Имя и Фамилия</label>
+                                <label htmlFor="fullName">Ваше Имя и Фамилия</label>
                                 <input
+                                    id="fullName"
                                     type="text"
                                     value={fullName}
                                     onChange={(e) => setFullName(e.target.value)}
@@ -68,8 +69,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                                 />
                             </div>
                             <div className="login-page__form-group">
-                                <label>Имя пользователя (Никнейм)</label>
+                                <label htmlFor="username">Имя пользователя (Никнейм)</label>
                                 <input
+                                    id="username"
                                     type="text"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
@@ -79,8 +81,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                         </>
                     )}
                     <div className="login-page__form-group">
-                        <label>Email</label>
+                        <label htmlFor="email">Email</label>
                         <input
+                            id="email"
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -89,8 +92,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                         />
                     </div>
                     <div className="login-page__form-group">
-                        <label>Пароль</label>
+                        <label htmlFor="password">Пароль</label>
                         <input
+                            id="password"
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}

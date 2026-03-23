@@ -17,11 +17,15 @@ function App() {
     };
   }, []);
 
-  if (!isAuthenticated) {
-    return <LoginPage onLoginSuccess={() => setIsAuthenticated(true)} />;
-  }
-
-  return <MainPage />
+  return (
+    <>
+      {!isAuthenticated ? (
+        <LoginPage onLoginSuccess={() => setIsAuthenticated(true)} />
+      ) : (
+        <MainPage />
+      )}
+    </>
+  );
 }
 
 export default App
