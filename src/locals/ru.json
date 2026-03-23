@@ -1,0 +1,167 @@
+{
+  "systemReload": "Перезагрузка системы",
+  "closeMenu": "Закрыть меню",
+  "openMenu": "Открыть меню",
+  "searchPlaceholder": "Поиск...",
+  "header_search_input": "Поле поиска",
+  "sidebar": {
+    "expandMenu": "Развернуть меню",
+    "collapseMenu": "Свернуть меню"
+  },
+  "userDropdown": {
+    "ariaLabel": "Меню пользователя",
+    "onlineStatus": "В сети",
+    "myProfile": "Мой профиль",
+    "settings": "Настройки",
+    "statistics": "Статистика",
+    "logout": "Выйти"
+  },
+  "header": {
+    "notifications": "Уведомления",
+    "new": "новых"
+  },
+  "login": {
+    "defaultName": "Без имени",
+    "serverError": "Произошла ошибка при подключении к серверу",
+    "signInTitle": "Вход в систему",
+    "signUpTitle": "Регистрация",
+    "fullNameLabel": "Ваше Имя и Фамилия",
+    "fullNamePlaceholder": "Иван Иванов",
+    "usernameLabel": "Имя пользователя (Никнейм)",
+    "usernamePlaceholder": "ivan_i",
+    "passwordLabel": "Пароль",
+    "loading": "Загрузка...",
+    "signInButton": "Войти",
+    "signUpButton": "Зарегистрироваться",
+    "noAccount": "Нет аккаунта?",
+    "createAccount": "Создать",
+    "hasAccount": "Уже есть аккаунт?"
+  },
+  
+  "common": {
+    "edit": "Редактировать",
+    "view": "Посмотреть",
+    "delete": "Удалить",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "add": "Добавить"
+  },
+  
+  "nav": {
+    "clients": "Клиенты",
+    "executors": "Исполнители",
+    "orders": "Заказы",
+    "statistics": "Статистика",
+    "settings": "Настройки"
+  },
+
+  "orders": {
+    "autoAddedComment": "Добавлен автоматически при создании заказа",
+    "title": "Заказы",
+    "searchPlaceholder": "Поиск по заказам...",
+    "addButton": "Добавить заказ",
+    "noOrders": "Нет заказов. Добавьте свой первый заказ!",
+    "table": {
+      "orderNumber": "№ Заказа",
+      "dateTime": "Дата и время",
+      "customer": "Клиент",
+      "description": "Описание",
+      "address": "Адрес",
+      "executor": "Исполнитель",
+      "actions": "Действия"
+    }
+  },
+  
+  "executors": {
+    "title": "Исполнители",
+    "searchPlaceholder": "Поиск по исполнителям...",
+    "mobileSearchPlaceholder": "Поиск...",
+    "addButton": "Добавить исполнителя",
+    "noExecutors": "Нет исполнителей",
+    "corporate": "Юр. лицо",
+    "private": "Физ. лицо",
+    "idLabel": "ID:",
+    "contactsLabel": "Контакты:",
+    "commentsLabel": "Комментарий:",
+    "table": {
+      "name": "Имя / Название",
+      "contacts": "Контакты",
+      "comments": "Комментарий",
+      "actions": "Действия"
+    }
+  },
+
+  "clients": {
+    "title": "Клиенты",
+    "searchPlaceholder": "Поиск по клиентам...",
+    "mobileSearchPlaceholder": "Поиск...",
+    "addButton": "Добавить клиента",
+    "noClients": "Нет клиентов",
+    "corporate": "Юр. лицо",
+    "private": "Физ. лицо",
+    "idLabel": "ID:",
+    "contactsLabel": "Контакты:",
+    "commentsLabel": "Комментарий:",
+    "table": {
+      "nameId": "Имя (ID)",
+      "contacts": "Контакты",
+      "comments": "Комментарий",
+      "actions": "Действия"
+    }
+  },
+
+  "executorContactsRequired": "Контакты обязательны",
+  "contactsRequired": "Контакты обязательны",
+  "contactsTooShort": "Слишком короткие контакты",
+  "invalidContact": "Неверный формат контакта",
+  "editExecutorTitle": "Редактирование исполнителя",
+  "addExecutorTitle": "Новый исполнитель",
+  "executorNameLabel": "Имя / Название",
+  "executorNamePlaceholder": "Введите имя",
+  "executorContactsLabel": "Контакты",
+  "executorContactsPlaceholder": "Phone, Email",
+  "executorCommentsLabel": "Комментарий",
+  "executorCommentsPlaceholder": "Пара слов...",
+  "saveExecutorChanges": "Сохранить изменения",
+  "addExecutor": "Добавить исполнителя",
+  
+  "clientContactsRequired": "Контакты обязательны",
+  "editClientTitle": "Редактирование клиента",
+  "addClientTitle": "Новый клиент",
+  "clientNameLabel": "Имя / Название клиента",
+
+  "clientContactsLabel": "Контакты",
+
+  "clientCommentsLabel": "Комментарий",
+  "clientCommentsPlaceholder": "Доп. инфо...",
+  "saveClientChanges": "Сохранить",
+  "addClient": "Добавить клиента",
+
+  "unassigned": "Не назначен",
+  "editOrderTitle": "Редактирование заказа",
+  "newOrderTitle": "Новый заказ",
+  "newClient": "Новый клиент",
+  "existingClient": "Существующий клиент",
+  "client": "Клиент",
+  "selectClient": "Выберите клиента",
+  "clientName": "Имя клиента",
+  "clientNamePlaceholder": "Введите имя клиента",
+  "clientContacts": "Контакты клиента",
+  "clientContactsPlaceholder": "Телефон или Email",
+  "newExecutor": "Новый исполнитель",
+  "existingExecutor": "Существующий",
+  "executor": "Исполнитель",
+  "selectExecutor": "Выберите исполнителя",
+  "executorName": "Имя исполнителя",
+  "executorNamePlaceholderOptional": "Введите имя (необязательно)",
+  "executorContacts": "Контакты исполнителя",
+  "executorContactsPlaceholderOptional": "Телефон или Email",
+  "address": "Адрес",
+  "addressPlaceholder": "Введите адрес",
+  "date": "Дата",
+  "time": "Время",
+  "orderDescription": "Описание заказа",
+  "orderDescriptionPlaceholder": "Опишите задачу...",
+  "saveOrderChanges": "Сохранить заказ",
+  "addOrder": "Создать заказ"
+}

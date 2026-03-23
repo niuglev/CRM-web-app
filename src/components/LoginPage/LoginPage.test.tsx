@@ -11,6 +11,30 @@ vi.mock('../../api/auth', () => ({
   }
 }));
 
+// Mock react-i18next
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => {
+      // Return a simple translation map for the test, or just the key
+      const translations: Record<string, string> = {
+        'login.signInTitle': 'Вход в систему',
+        'login.signUpTitle': 'Регистрация',
+        'login.fullNameLabel': 'Ваше Имя и Фамилия',
+        'login.usernameLabel': 'Имя пользователя (Никнейм)',
+        'login.passwordLabel': 'Пароль',
+        'login.signInButton': 'Войти',
+        'login.signUpButton': 'Зарегистрироваться',
+        'login.createAccount': 'Создать',
+        'login.noAccount': 'Нет аккаунта?',
+        'login.hasAccount': 'Уже есть аккаунт?',
+        'login.serverError': 'Неверный email или пароль',
+        'login.loading': 'Загрузка...',
+      };
+      return translations[key] || key;
+    }
+  })
+}));
+
 describe('LoginPage Component', () => {
   const mockOnLoginSuccess = vi.fn();
 

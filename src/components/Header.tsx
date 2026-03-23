@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { FiSearch, FiBell, FiChevronDown, FiMenu, FiX } from 'react-icons/fi';
+import { FiSearch, FiBell, FiMenu, FiX } from 'react-icons/fi';
 import UserDropdown from './UserDropdown';
 import SystemNotification from './SystemNotification';
 import './Header.scss';
@@ -84,9 +84,6 @@ const Header: React.FC<HeaderProps> = ({
     }, [onMenuToggle]);
 
 
-    const { t } = useTranslation();
-
-
     return (
         <>
             <header className={`header ${isScrolled ? 'header--scrolled' : ''} ${!isVisible ? 'header--hidden' : ''}`}>
@@ -119,7 +116,7 @@ const Header: React.FC<HeaderProps> = ({
                         <button
                             className="header__notification"
                             onClick={handleBellClick}
-                            aria-label={`Уведомления ${notificationCount > 0 ? `(${notificationCount} новых)` : ''}`}
+                            aria-label={`${t('header.notifications')} ${notificationCount > 0 ? `(${notificationCount} ${t('header.new')})` : ''}`}
                         >
                             <FiBell className="header__bell" />
                             {notificationCount > 0 && (

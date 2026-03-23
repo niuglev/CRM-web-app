@@ -1,0 +1,167 @@
+{
+  "systemReload": "System Reload",
+  "closeMenu": "Close Menu",
+  "openMenu": "Open Menu",
+  "searchPlaceholder": "Search...",
+  "header_search_input": "Search input",
+  "sidebar": {
+    "expandMenu": "Expand menu",
+    "collapseMenu": "Collapse menu"
+  },
+  "userDropdown": {
+    "ariaLabel": "User menu",
+    "onlineStatus": "Online",
+    "myProfile": "My Profile",
+    "settings": "Settings",
+    "statistics": "Statistics",
+    "logout": "Log Out"
+  },
+  "header": {
+    "notifications": "Notifications",
+    "new": "new"
+  },
+  "login": {
+    "defaultName": "No name",
+    "serverError": "An error occurred while connecting to the server",
+    "signInTitle": "Sign In",
+    "signUpTitle": "Registration",
+    "fullNameLabel": "Full Name",
+    "fullNamePlaceholder": "John Doe",
+    "usernameLabel": "Username (Nickname)",
+    "usernamePlaceholder": "john_d",
+    "passwordLabel": "Password",
+    "loading": "Loading...",
+    "signInButton": "Sign In",
+    "signUpButton": "Register",
+    "noAccount": "Don't have an account?",
+    "createAccount": "Create",
+    "hasAccount": "Already have an account?"
+  },
+  
+  "common": {
+    "edit": "Edit",
+    "view": "View",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "add": "Add"
+  },
+  
+  "nav": {
+    "clients": "Clients",
+    "executors": "Executors",
+    "orders": "Orders",
+    "statistics": "Statistics",
+    "settings": "Settings"
+  },
+
+  "orders": {
+    "autoAddedComment": "Added automatically when creating an order",
+    "title": "Orders",
+    "searchPlaceholder": "Search orders...",
+    "addButton": "Add Order",
+    "noOrders": "No orders yet. Add your first order!",
+    "table": {
+      "orderNumber": "Order No.",
+      "dateTime": "Date & Time",
+      "customer": "Customer",
+      "description": "Description",
+      "address": "Address",
+      "executor": "Executor",
+      "actions": "Actions"
+    }
+  },
+  
+  "executors": {
+    "title": "Executors",
+    "searchPlaceholder": "Search executors...",
+    "mobileSearchPlaceholder": "Search...",
+    "addButton": "Add Executor",
+    "noExecutors": "No executors found",
+    "corporate": "Corporate",
+    "private": "Private",
+    "idLabel": "ID:",
+    "contactsLabel": "Contacts:",
+    "commentsLabel": "Comments:",
+    "table": {
+      "name": "Name / Title",
+      "contacts": "Contacts",
+      "comments": "Comments",
+      "actions": "Actions"
+    }
+  },
+
+  "clients": {
+    "title": "Clients",
+    "searchPlaceholder": "Search clients...",
+    "mobileSearchPlaceholder": "Search...",
+    "addButton": "Add Client",
+    "noClients": "No clients found",
+    "corporate": "Corporate",
+    "private": "Private",
+    "idLabel": "ID:",
+    "contactsLabel": "Contacts:",
+    "commentsLabel": "Comments:",
+    "table": {
+      "nameId": "Name (ID)",
+      "contacts": "Contacts",
+      "comments": "Comments",
+      "actions": "Actions"
+    }
+  },
+
+  "executorContactsRequired": "Contacts are required",
+  "contactsRequired": "Contacts are required",
+  "contactsTooShort": "Contacts are too short",
+  "invalidContact": "Invalid contact format",
+  "editExecutorTitle": "Edit Executor",
+  "addExecutorTitle": "New Executor",
+  "executorNameLabel": "Name / Title",
+  "executorNamePlaceholder": "Enter name",
+  "executorContactsLabel": "Contacts",
+  "executorContactsPlaceholder": "Phone, Email",
+  "executorCommentsLabel": "Comments",
+  "executorCommentsPlaceholder": "A few words...",
+  "saveExecutorChanges": "Save Changes",
+  "addExecutor": "Add Executor",
+  
+  "clientContactsRequired": "Contacts are required",
+  "editClientTitle": "Edit Client",
+  "addClientTitle": "New Client",
+  "clientNameLabel": "Client Name",
+
+  "clientContactsLabel": "Contacts",
+
+  "clientCommentsLabel": "Comments",
+  "clientCommentsPlaceholder": "Additional info...",
+  "saveClientChanges": "Save",
+  "addClient": "Add Client",
+
+  "unassigned": "Unassigned",
+  "editOrderTitle": "Edit Order",
+  "newOrderTitle": "New Order",
+  "newClient": "New Client",
+  "existingClient": "Existing Client",
+  "client": "Client",
+  "selectClient": "Select Client",
+  "clientName": "Client Name",
+  "clientNamePlaceholder": "Enter client name",
+  "clientContacts": "Client Contacts",
+  "clientContactsPlaceholder": "Phone or Email",
+  "newExecutor": "New Executor",
+  "existingExecutor": "Existing",
+  "executor": "Executor",
+  "selectExecutor": "Select Executor",
+  "executorName": "Executor Name",
+  "executorNamePlaceholderOptional": "Enter name (optional)",
+  "executorContacts": "Executor Contacts",
+  "executorContactsPlaceholderOptional": "Phone or Email",
+  "address": "Address",
+  "addressPlaceholder": "Enter address",
+  "date": "Date",
+  "time": "Time",
+  "orderDescription": "Order Description",
+  "orderDescriptionPlaceholder": "Describe the task...",
+  "saveOrderChanges": "Save Order",
+  "addOrder": "Create Order"
+}

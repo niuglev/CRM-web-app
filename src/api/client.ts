@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { logger } from '../utils/logger';
 
 const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
@@ -23,6 +24,14 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
+        logger.error('API Request Error', {
+            url: error.config?.url,
+            method: error.config?.method,
+            status: error.response?.status,
+            data: error.response?.data,
+            message: error.message
+        });
+
         if (error.response && error.response.status === 401) {
             localStorage.removeItem('access_token');
             // On 401, we dispatch a custom event to force the app to show login page

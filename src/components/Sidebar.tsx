@@ -1,5 +1,6 @@
 import React from 'react';
 import { FiUser, FiUsers, FiFileText, FiBarChart, FiSettings, FiMenu, FiX } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import './Sidebar.scss';
 
 interface SidebarItem {
@@ -19,31 +20,33 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activeItem, isCollapsed = false, onToggle, onMenuItemClick, ordersCount }) => {
+  const { t } = useTranslation();
+
   const menuItems: SidebarItem[] = [
     {
       id: 'clients',
-      label: 'Клиенты',
+      label: t('nav.clients'),
       icon: <FiUser />,
     },
     {
       id: 'executors',
-      label: 'Исполнители',
+      label: t('nav.executors'),
       icon: <FiUsers />,
     },
     {
       id: 'orders',
-      label: 'Заказы',
+      label: t('nav.orders'),
       icon: <FiFileText />,
       badge: ordersCount,
     },
     {
       id: 'statistics',
-      label: 'Статистика',
+      label: t('nav.statistics'),
       icon: <FiBarChart />,
     },
     {
       id: 'settings',
-      label: 'Настройки',
+      label: t('nav.settings'),
       icon: <FiSettings />,
     },
   ];
@@ -60,8 +63,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeItem, isCollapsed = false, onTo
       <button
         className="sidebar__toggle"
         onClick={onToggle}
-        aria-label={isCollapsed ? 'Развернуть меню' : 'Свернуть меню'}
-        title={isCollapsed ? 'Развернуть меню' : 'Свернуть меню'}
+        aria-label={isCollapsed ? t('sidebar.expandMenu') : t('sidebar.collapseMenu')}
+        title={isCollapsed ? t('sidebar.expandMenu') : t('sidebar.collapseMenu')}
       >
         {isCollapsed ? <FiMenu /> : <FiX />}
       </button>

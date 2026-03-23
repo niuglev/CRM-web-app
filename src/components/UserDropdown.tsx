@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FiBarChart2, FiLogOut, FiChevronDown, FiUser, FiSettings } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import './UserDropdown.scss';
 
 interface UserDropdownProps {
@@ -19,6 +20,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
     onProfileClick,
     onSettingsClick,
 }) => {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -45,7 +47,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
                 className="user-dropdown__trigger"
                 onClick={toggleDropdown}
                 aria-expanded={isOpen}
-                aria-label="Меню пользователя"
+                aria-label={t('userDropdown.ariaLabel')}
             >
                 {userInitials && (
                     <div className="user-dropdown__avatar">
@@ -64,7 +66,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
                         </div>
                         <div className="user-dropdown__header-info">
                             <div className="user-dropdown__header-name">{userName}</div>
-                            <div className="user-dropdown__header-status">В сети</div>
+                            <div className="user-dropdown__header-status">{t('userDropdown.onlineStatus')}</div>
                         </div>
                     </div>
 
@@ -78,7 +80,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
                         }}
                     >
                         <FiUser className="user-dropdown__item-icon" />
-                        <span>Мой профиль</span>
+                        <span>{t('userDropdown.myProfile')}</span>
                     </button>
 
                     <button
@@ -89,7 +91,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
                         }}
                     >
                         <FiSettings className="user-dropdown__item-icon" />
-                        <span>Настройки</span>
+                        <span>{t('userDropdown.settings')}</span>
                     </button>
 
                     <button
@@ -100,7 +102,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
                         }}
                     >
                         <FiBarChart2 className="user-dropdown__item-icon" />
-                        <span>Статистика</span>
+                        <span>{t('userDropdown.statistics')}</span>
                     </button>
 
                     <div className="user-dropdown__divider" />
@@ -113,7 +115,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
                         }}
                     >
                         <FiLogOut className="user-dropdown__item-icon" />
-                        <span>Выйти</span>
+                        <span>{t('userDropdown.logout')}</span>
                     </button>
                 </div>
             )}

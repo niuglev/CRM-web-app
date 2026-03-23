@@ -12,6 +12,7 @@ import useMobile from '../hooks/useMobile';
 import type { Executor, Client, Order, User } from '../types';
 import { dataApi } from '../api/services';
 import { authApi } from '../api/auth';
+import { useTranslation } from 'react-i18next';
 import './ExecutorsPage.scss';
 
 import AddClientModal from './AddClientModal';
@@ -19,6 +20,7 @@ import AddExecutorModal from './AddExecutorModal';
 import AddOrderModal from './AddOrderModal';
 
 const MainPage: React.FC = () => {
+  const { t } = useTranslation();
   const isMobile = useMobile(768);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
@@ -242,7 +244,7 @@ const MainPage: React.FC = () => {
       const newClientData = {
         name: orderData.customerName,
         contacts: orderData.customerContacts || '',
-        comments: 'Добавлен автоматически при создании заказа'
+        comments: t('orders.autoAddedComment')
       };
 
       try {
@@ -252,7 +254,7 @@ const MainPage: React.FC = () => {
           id: finalCustomerId,
           name: `${newBackendClient.first_name || ''} ${newBackendClient.last_name || ''}`.trim() || 'Без имени',
           contacts: newBackendClient.email || newBackendClient.phone || '',
-          comments: newBackendClient.notes || newBackendClient.job_title || 'Добавлен автоматически при создании заказа'
+          comments: newBackendClient.notes || newBackendClient.job_title || t('orders.autoAddedComment')
         };
         setClients(prev => [...prev, newClient]);
       } catch (e) {
@@ -273,7 +275,7 @@ const MainPage: React.FC = () => {
       const newExecutorData = {
         name: finalExecutorName,
         contacts: orderData.executorContacts || '',
-        comments: 'Добавлен автоматически при создании заказа'
+        comments: t('orders.autoAddedComment')
       };
 
       try {
@@ -283,7 +285,7 @@ const MainPage: React.FC = () => {
           id: finalExecutorId,
           name: `${newBackendExec.first_name || ''} ${newBackendExec.last_name || ''}`.trim() || newBackendExec.username || 'Без имени',
           contacts: newBackendExec.email || '',
-          comments: newBackendExec.phone || 'Добавлен автоматически при создании заказа'
+          comments: newBackendExec.phone || t('orders.autoAddedComment')
         };
         setExecutors(prev => [...prev, newExecutor]);
       } catch (e) {

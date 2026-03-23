@@ -116,11 +116,12 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSubm
         >
             <form className="add-client-modal" onSubmit={handleSubmit}>
                 <div className="add-client-modal__field">
-                    <label className="add-client-modal__label">
+                    <label htmlFor="clientName" className="add-client-modal__label">
                         <FiUser className="add-client-modal__label-icon" />
                         {t('nameLabel')}
                     </label>
                     <input
+                        id="clientName"
                         type="text"
                         className="add-client-modal__input"
                         placeholder={t('namePlaceholder')}
@@ -131,11 +132,12 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSubm
                 </div>
 
                 <div className="add-client-modal__field">
-                    <label className="add-client-modal__label">
+                    <label htmlFor="clientContacts" className="add-client-modal__label">
                         <FiPhone className="add-client-modal__label-icon" />
                         {t('contactsLabel')}
                     </label>
                     <input
+                        id="clientContacts"
                         type="text"
                         className={`add-client-modal__input ${errors.contacts ? 'add-client-modal__input--error' : ''}`}
                         placeholder={t('contactsPlaceholder')}
@@ -150,11 +152,12 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSubm
                 </div>
 
                 <div className="add-client-modal__field">
-                    <label className="add-client-modal__label">
+                    <label htmlFor="clientComments" className="add-client-modal__label">
                         <FiMessageSquare className="add-client-modal__label-icon" />
                         {t('commentsLabel')}
                     </label>
                     <textarea
+                        id="clientComments"
                         className="add-client-modal__input add-client-modal__input--textarea"
                         placeholder={t('commentsPlaceholder')}
                         value={formData.comments}

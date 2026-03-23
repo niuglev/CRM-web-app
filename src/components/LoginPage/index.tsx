@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { authApi } from '../../api/auth';
+import { useTranslation } from 'react-i18next';
 import './LoginPage.scss';
 
 interface LoginPageProps {
@@ -7,6 +8,7 @@ interface LoginPageProps {
 }
 
 const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
+    const { t } = useTranslation();
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -27,7 +29,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 localStorage.setItem('access_token', data.access_token);
                 onLoginSuccess();
             } else {
-                await authApi.register(email, password, username || email.split('@')[0], fullName || 'Без имени');
+                await authApi.register(email, password, username || email.split('@')[0], fullName || t('login.defaultName'));
                 // After register, automatically log in
                 const data = await authApi.login(email, password);
                 localStorage.setItem('access_token', data.access_token);
@@ -37,7 +39,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
             if (err.response?.data?.detail) {
                 setError(err.response.data.detail);
             } else {
-                setError('Произошла ошибка при подключении к серверу');
+                setError(t('login.serverError'));
             }
         } finally {
             setIsLoading(false);
@@ -49,7 +51,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
             <div className="login-page__container">
                 <h1 className="login-page__title">KP-CRM</h1>
                 <h2 className="login-page__subtitle">
-                    {isLogin ? 'Вход в систему' : 'Регистрация'}
+                    {isLogin ? t('login.signInTitle') : t('login.signUpTitle')}
                 </h2>
 
                 {error && <div className="login-page__error">{error}</div>}
@@ -58,24 +60,24 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                     {!isLogin && (
                         <>
                             <div className="login-page__form-group">
-                                <label htmlFor="fullName">Ваше Имя и Фамилия</label>
+                                <label htmlFor="fullName">{t('login.fullNameLabel')}</label>
                                 <input
                                     id="fullName"
                                     type="text"
                                     value={fullName}
                                     onChange={(e) => setFullName(e.target.value)}
-                                    placeholder="Иван Иванов"
+                                    placeholder={t('login.fullNamePlaceholder')}
                                     required={!isLogin}
                                 />
                             </div>
                             <div className="login-page__form-group">
-                                <label htmlFor="username">Имя пользователя (Никнейм)</label>
+                                <label htmlFor="username">{t('login.usernameLabel')}</label>
                                 <input
                                     id="username"
                                     type="text"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
-                                    placeholder="ivan_i"
+                                    placeholder={t('login.usernamePlaceholder')}
                                 />
                             </div>
                         </>
@@ -92,7 +94,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                         />
                     </div>
                     <div className="login-page__form-group">
-                        <label htmlFor="password">Пароль</label>
+                        <label htmlFor="password">{t('login.passwordLabel')}</label>
                         <input
                             id="password"
                             type="password"
@@ -107,15 +109,15 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                         className="login-page__button"
                         disabled={isLoading}
                     >
-                        {isLoading ? 'Загрузка...' : (isLogin ? 'Войти' : 'Зарегистрироваться')}
+                        {isLoading ? t('login.loading') : (isLogin ? t('login.signInButton') : t('login.signUpButton'))}
                     </button>
                 </form>
 
                 <div className="login-page__footer">
                     {isLogin ? (
-                        <p>Нет аккаунта? <button onClick={() => setIsLogin(false)}>Создать</button></p>
+                        <p>{t('login.noAccount')} <button onClick={() => setIsLogin(false)}>{t('login.createAccount')}</button></p>
                     ) : (
-                        <p>Уже есть аккаунт? <button onClick={() => setIsLogin(true)}>Войти</button></p>
+                        <p>{t('login.hasAccount')} <button onClick={() => setIsLogin(true)}>{t('login.signInButton')}</button></p>
                     )}
                 </div>
             </div>
