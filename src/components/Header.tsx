@@ -4,6 +4,7 @@ import UserDropdown from './UserDropdown';
 import SystemNotification from './SystemNotification';
 import './Header.scss';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 export interface HeaderProps {
     userName: string;
@@ -34,6 +35,7 @@ const Header: React.FC<HeaderProps> = ({
     const [isScrolled, setIsScrolled] = useState(false);
     const [showNotification, setShowNotification] = useState(showSystemNotification);
     const [notificationCount, setNotificationCount] = useState(0);
+    const navigate = useNavigate();
 
     // Эффект для отслеживания скролла
     useEffect(() => {
@@ -84,8 +86,6 @@ const Header: React.FC<HeaderProps> = ({
     }, [onMenuToggle]);
 
 
-    const { t } = useTranslation();
-
 
     return (
         <>
@@ -126,13 +126,13 @@ const Header: React.FC<HeaderProps> = ({
                                 <span className="header__notification-badge">{notificationCount}</span>
                             )}
                         </button>
-
                         <div className="header__user-dropdown">
                             <UserDropdown
                                 userName={userName}
                                 onStatisticsClick={handleStatisticsClick}
                                 onLogoutClick={handleLogoutClick}
                                 userInitials={userInitials}
+                                onProfileClick={() => navigate('/profile')}
                             />
                         </div>
                     </div>
