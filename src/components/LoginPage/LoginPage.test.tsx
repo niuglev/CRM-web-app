@@ -37,6 +37,8 @@ vi.mock('react-i18next', () => ({
 
 describe('LoginPage Component', () => {
   const mockOnLoginSuccess = vi.fn();
+  const mockLogin = vi.mocked(authApi.login);
+  const mockRegister = vi.mocked(authApi.register);
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -64,7 +66,7 @@ describe('LoginPage Component', () => {
 
   it('handles successful login', async () => {
     const mockToken = 'mock_access_token';
-    (authApi.login as any).mockResolvedValueOnce({ access_token: mockToken });
+    mockLogin.mockResolvedValueOnce({ access_token: mockToken, refresh_token: 'refresh', token_type: 'bearer' });
     
     render(<LoginPage onLoginSuccess={mockOnLoginSuccess} />);
     
@@ -81,7 +83,7 @@ describe('LoginPage Component', () => {
 
   it('displays error message on login failure', async () => {
     const errorMessage = 'Неверный email или пароль';
-    (authApi.login as any).mockRejectedValueOnce({
+    mockLogin.mockRejectedValueOnce({
       response: { data: { detail: errorMessage } }
     });
     
@@ -98,8 +100,8 @@ describe('LoginPage Component', () => {
 
   it('handles successful registration', async () => {
     const mockToken = 'new_user_token';
-    (authApi.register as any).mockResolvedValueOnce({});
-    (authApi.login as any).mockResolvedValueOnce({ access_token: mockToken });
+    mockRegister.mockResolvedValueOnce({});
+    mockLogin.mockResolvedValueOnce({ access_token: mockToken, refresh_token: 'refresh', token_type: 'bearer' });
     
     render(<LoginPage onLoginSuccess={mockOnLoginSuccess} />);
     

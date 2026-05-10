@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiUser, FiUsers, FiFileText, FiBarChart, FiSettings } from 'react-icons/fi';
+import { FiUser, FiFileText, FiBarChart, FiSettings, FiShield } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import './BottomNavigation.scss';
 
@@ -7,21 +7,24 @@ interface BottomNavigationProps {
     activeItem?: string;
     onMenuItemClick?: (itemId: string) => void;
     ordersCount?: number;
+    isAdmin?: boolean;
 }
 
-const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeItem, onMenuItemClick, ordersCount }) => {
+interface BottomNavItem {
+    id: string;
+    label: string;
+    icon: React.ReactNode;
+    badge?: number;
+}
+
+const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeItem, onMenuItemClick, ordersCount, isAdmin = false }) => {
     const { t } = useTranslation();
 
-    const menuItems = [
+    const baseItems: BottomNavItem[] = [
         {
             id: 'clients',
             label: t('nav.clients'),
             icon: <FiUser />,
-        },
-        {
-            id: 'executors',
-            label: t('nav.executors'),
-            icon: <FiUsers />,
         },
         {
             id: 'orders',
@@ -30,16 +33,28 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeItem, onMenuI
             badge: ordersCount,
         },
         {
-            id: 'statistics',
-            label: t('nav.statistics'),
-            icon: <FiBarChart />,
+            id: 'admin-users',
+            label: t('nav.adminUsers'),
+            icon: <FiShield />,
         },
         {
-            id: 'settings',
-            label: t('nav.settings'),
+            id: 'table-settings',
+            label: t('nav.tableSettings'),
             icon: <FiSettings />,
         },
     ];
+
+    const adminItems: BottomNavItem[] = isAdmin
+        ? [
+            {
+                id: 'finance',
+                label: t('nav.finance'),
+                icon: <FiBarChart />,
+            },
+        ]
+        : [];
+
+    const menuItems = [...baseItems, ...adminItems];
 
     const handleItemClick = (e: React.MouseEvent<HTMLButtonElement>, itemId: string) => {
         e.preventDefault();

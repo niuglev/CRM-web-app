@@ -5,13 +5,13 @@ type LogLevel = 'info' | 'warn' | 'error';
 interface LogData {
     level: LogLevel;
     message: string;
-    context?: Record<string, any>;
+    context?: Record<string, unknown>;
     url: string;
     userAgent: string;
     timestamp: string;
 }
 
-const sendLog = async (level: LogLevel, message: string, context?: Record<string, any>) => {
+const sendLog = async (level: LogLevel, message: string, context?: Record<string, unknown>) => {
     // Always output to developer console
     if (level === 'error') {
         console.error(`[${level.toUpperCase()}]`, message, context || '');
@@ -52,7 +52,7 @@ const sendLog = async (level: LogLevel, message: string, context?: Record<string
 };
 
 export const logger = {
-    info: (message: string, context?: Record<string, any>) => sendLog('info', message, context),
-    warn: (message: string, context?: Record<string, any>) => sendLog('warn', message, context),
-    error: (message: string, context?: Record<string, any>) => sendLog('error', message, context),
+    info: (message: string, context?: Record<string, unknown>) => sendLog('info', message, context),
+    warn: (message: string, context?: Record<string, unknown>) => sendLog('warn', message, context),
+    error: (message: string, context?: Record<string, unknown>) => sendLog('error', message, context),
 };

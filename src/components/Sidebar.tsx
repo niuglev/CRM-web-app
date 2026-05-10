@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiUser, FiUsers, FiFileText, FiBarChart, FiSettings, FiMenu, FiX } from 'react-icons/fi';
+import { FiUser, FiFileText, FiBarChart, FiSettings, FiMenu, FiX, FiShield } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import './Sidebar.scss';
 
@@ -17,21 +17,17 @@ interface SidebarProps {
   onToggle?: () => void;
   onMenuItemClick?: (itemId: string) => void;
   ordersCount?: number;
+  isAdmin?: boolean;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ activeItem, isCollapsed = false, onToggle, onMenuItemClick, ordersCount }) => {
+const Sidebar: React.FC<SidebarProps> = ({ activeItem, isCollapsed = false, onToggle, onMenuItemClick, ordersCount, isAdmin = false }) => {
   const { t } = useTranslation();
 
-  const menuItems: SidebarItem[] = [
+  const baseItems: SidebarItem[] = [
     {
       id: 'clients',
       label: t('nav.clients'),
       icon: <FiUser />,
-    },
-    {
-      id: 'executors',
-      label: t('nav.executors'),
-      icon: <FiUsers />,
     },
     {
       id: 'orders',
@@ -40,16 +36,28 @@ const Sidebar: React.FC<SidebarProps> = ({ activeItem, isCollapsed = false, onTo
       badge: ordersCount,
     },
     {
-      id: 'statistics',
-      label: t('nav.statistics'),
-      icon: <FiBarChart />,
+      id: 'admin-users',
+      label: t('nav.adminUsers'),
+      icon: <FiShield />,
     },
     {
-      id: 'settings',
-      label: t('nav.settings'),
+      id: 'table-settings',
+      label: t('nav.tableSettings'),
       icon: <FiSettings />,
     },
   ];
+
+  const adminItems: SidebarItem[] = isAdmin
+    ? [
+        {
+          id: 'finance',
+          label: t('nav.finance'),
+          icon: <FiBarChart />,
+        },
+      ]
+    : [];
+
+  const menuItems = [...baseItems, ...adminItems];
 
   const handleItemClick = (e: React.MouseEvent<HTMLAnchorElement>, itemId: string) => {
     e.preventDefault();

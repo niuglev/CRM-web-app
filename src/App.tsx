@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import MainPage from './components/ExecutorsPage'
 import LoginPage from './components/LoginPage'
+import ProfilePage from './pages/ProfilePage'
+import ChangePasswordPage from './pages/ChangePasswordPage'
 import './App.css'
-import { useTranslation } from 'react-i18next'
 
 function App() {
 
@@ -20,14 +22,25 @@ function App() {
     };
   }, []);
 
+  const handleLoginSuccess = () => setIsAuthenticated(true);
+
   return (
-    <>
+    <Routes>
       {!isAuthenticated ? (
-        <LoginPage onLoginSuccess={() => setIsAuthenticated(true)} />
+        <>
+          <Route path="/login" element={<LoginPage onLoginSuccess={handleLoginSuccess} />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </>
       ) : (
-        <MainPage />
+        <>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/change-password" element={<ChangePasswordPage />} />
+          <Route path="/login" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </>
       )}
-    </>
+    </Routes>
   );
 }
 

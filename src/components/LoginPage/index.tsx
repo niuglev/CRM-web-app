@@ -18,6 +18,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
+    const getErrorDetail = (err: unknown): string | undefined => {
+        if (typeof err !== 'object' || err === null) return undefined;
+        const maybeResponse = (err as { response?: { data?: { detail?: unknown } } }).response;
+        const detail = maybeResponse?.data?.detail;
+        return typeof detail === 'string' ? detail : undefined;
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
@@ -35,9 +42,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 localStorage.setItem('access_token', data.access_token);
                 onLoginSuccess();
             }
-        } catch (err: any) {
-            if (err.response?.data?.detail) {
-                setError(err.response.data.detail);
+        } catch (err: unknown) {
+            const detail = getErrorDetail(err);
+            if (detail) {
+                setError(detail);
             } else {
                 setError(t('login.serverError'));
             }

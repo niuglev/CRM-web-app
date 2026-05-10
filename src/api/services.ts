@@ -1,6 +1,51 @@
 import { apiClient } from './client';
 import type { Executor, Client, Order } from '../types';
 
+interface BackendUser {
+    id: number;
+    username?: string;
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+    phone?: string;
+}
+
+interface BackendContact {
+    id: number;
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+    phone?: string;
+    notes?: string;
+    job_title?: string;
+}
+
+interface BackendDeal {
+    id: number;
+    expected_close_date?: string | null;
+    contact_id?: number | null;
+    owner_id?: number | null;
+    title?: string;
+    description?: string;
+}
+
+interface EditableEntityPayload {
+    name: string;
+    contacts: string;
+    comments?: string;
+}
+
+interface OrderPayload {
+    date?: string;
+    time?: string;
+    customerId: string;
+    customerName: string;
+    description: string;
+    address: string;
+    executorId: string;
+    executorName: string;
+}
+
 export const dataApi = {
     // Executors (Users backend endpoint)
     getExecutors: async () => {
@@ -8,10 +53,10 @@ export const dataApi = {
         // Assuming the current logged-in user has rights, or we handle the 403 error.
         const response = await apiClient.get('/users?skip=0&limit=100');
         // Map backend user to frontend Executor type
-        return response.data.map((user: any): Executor => ({
+        return response.data.map((user: BackendUser): Executor => ({
             id: user.id.toString(),
             name: `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'Без имени',
-            contacts: user.email,
+            contacts: user.email || '',
             comments: user.phone || ''
         }));
     },
@@ -19,7 +64,7 @@ export const dataApi = {
     // Clients (Contacts backend endpoint)
     getClients: async () => {
         const response = await apiClient.get('/contacts?skip=0&limit=100');
-        return response.data.items.map((contact: any): Client => ({
+        return response.data.items.map((contact: BackendContact): Client => ({
             id: contact.id.toString(),
             name: `${contact.first_name || ''} ${contact.last_name || ''}`.trim() || 'Без имени',
             contacts: contact.email || contact.phone || '',
@@ -29,7 +74,7 @@ export const dataApi = {
 
     getOrders: async () => {
         const response = await apiClient.get('/deals?skip=0&limit=100');
-        return response.data.items.map((deal: any): Order => {
+        return response.data.items.map((deal: BackendDeal): Order => {
             const dealDate = deal.expected_close_date ? new Date(deal.expected_close_date) : new Date();
 
             // Extract address and customer name from description if available
@@ -61,7 +106,7 @@ export const dataApi = {
         });
     },
 
-    addClient: async (clientData: any) => {
+    addClient: async (clientData: EditableEntityPayload) => {
         const response = await apiClient.post('/contacts', {
             first_name: clientData.name?.split(' ')[0] || clientData.name,
             last_name: clientData.name?.split(' ')[1] || '',
@@ -72,7 +117,7 @@ export const dataApi = {
         return response.data;
     },
 
-    updateClient: async (id: string, clientData: any) => {
+    updateClient: async (id: string, clientData: EditableEntityPayload) => {
         // Only update an existing client on the backend if the ID is a number
         if (isNaN(Number(id))) return;
         const response = await apiClient.put(`/contacts/${id}`, {
@@ -91,7 +136,7 @@ export const dataApi = {
         return response.data;
     },
 
-    addOrder: async (orderData: any) => {
+    addOrder: async (orderData: OrderPayload) => {
         let expected_close_date = null;
         if (orderData.date) {
             if (orderData.date.includes('-')) {
@@ -115,7 +160,7 @@ export const dataApi = {
         return response.data;
     },
 
-    updateOrder: async (id: string, orderData: any) => {
+    updateOrder: async (id: string, orderData: OrderPayload) => {
         if (isNaN(Number(id))) return;
         let expected_close_date = null;
         if (orderData.date) {
@@ -145,7 +190,7 @@ export const dataApi = {
         return response.data;
     },
 
-    addExecutor: async (executorData: any) => {
+    addExecutor: async (executorData: EditableEntityPayload) => {
         const response = await apiClient.post('/users', {
             email: executorData.contacts.includes('@') ? executorData.contacts : `user${Date.now()}@example.com`,
             username: executorData.name.replace(/\s+/g, '_').toLowerCase() + Date.now().toString().slice(-4),

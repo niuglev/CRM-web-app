@@ -115,7 +115,7 @@ const AddOrderModal: React.FC<AddOrderModalProps> = ({
             return t('contactsTooShort');
         }
 
-        const phoneRegex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}$/;
+        const phoneRegex = /^[+]?\(?[0-9]{1,4}\)?[-\s.]?\(?[0-9]{1,4}\)?[-\s.]?[0-9]{1,9}$/;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const messengerRegex = /^(tg\.|@|wa\(|wa\.|viber\.|telegram\.)/i;
 

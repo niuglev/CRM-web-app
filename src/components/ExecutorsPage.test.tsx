@@ -33,15 +33,21 @@ vi.mock('react-i18next', () => ({
 }));
 
 describe('ExecutorsPage Component (Clients Table)', () => {
+  const mockGetMe = vi.mocked(authApi.getMe);
+  const mockGetClients = vi.mocked(dataApi.getClients);
+  const mockGetExecutors = vi.mocked(dataApi.getExecutors);
+  const mockGetOrders = vi.mocked(dataApi.getOrders);
+  const mockAddClient = vi.mocked(dataApi.addClient);
+
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
     
     // Default mock implementations
-    (authApi.getMe as any).mockResolvedValue({ full_name: 'Test User' });
-    (dataApi.getClients as any).mockResolvedValue([]);
-    (dataApi.getExecutors as any).mockResolvedValue([]);
-    (dataApi.getOrders as any).mockResolvedValue([]);
+    mockGetMe.mockResolvedValue({ full_name: 'Test User' });
+    mockGetClients.mockResolvedValue([]);
+    mockGetExecutors.mockResolvedValue([]);
+    mockGetOrders.mockResolvedValue([]);
   });
 
   it('adds a new client successfully and displays it in the table', async () => {
@@ -53,7 +59,7 @@ describe('ExecutorsPage Component (Clients Table)', () => {
       phone: '1234567890',
       notes: ''
     };
-    (dataApi.addClient as any).mockResolvedValueOnce(newClientBackendResponse);
+    mockAddClient.mockResolvedValueOnce(newClientBackendResponse);
 
     render(<ExecutorsPage />);
 

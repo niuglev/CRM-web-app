@@ -25,8 +25,11 @@ export interface Order {
 }
 
 export interface User {
+  id?: string;
   name: string;
   initials: string;
+  avatarUrl?: string | null;
+  isSuperuser?: boolean;
 }
 
 export interface MenuItem {

@@ -6,6 +6,7 @@ import './UserDropdown.scss';
 interface UserDropdownProps {
     userName: string;
     userInitials?: string;
+    userAvatarUrl?: string | null;
     onStatisticsClick?: () => void;
     onLogoutClick?: () => void;
     onProfileClick?: () => void;
@@ -15,6 +16,7 @@ interface UserDropdownProps {
 const UserDropdown: React.FC<UserDropdownProps> = ({
     userName,
     userInitials,
+    userAvatarUrl,
     onStatisticsClick,
     onLogoutClick,
     onProfileClick,
@@ -22,7 +24,12 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
 }) => {
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
+    const [avatarFailed, setAvatarFailed] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        setAvatarFailed(false);
+    }, [userAvatarUrl]);
 
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
@@ -49,11 +56,18 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
                 aria-expanded={isOpen}
                 aria-label={t('userDropdown.ariaLabel')}
             >
-                {userInitials && (
-                    <div className="user-dropdown__avatar">
-                        {userInitials}
-                    </div>
-                )}
+                <div className="user-dropdown__avatar">
+                    {userAvatarUrl && !avatarFailed ? (
+                        <img
+                            src={userAvatarUrl}
+                            alt={userName}
+                            className="user-dropdown__avatar-image"
+                            onError={() => setAvatarFailed(true)}
+                        />
+                    ) : (
+                        userInitials
+                    )}
+                </div>
                 <span className="user-dropdown__name">{userName}</span>
                 <FiChevronDown className={`user-dropdown__icon ${isOpen ? 'user-dropdown__icon--open' : ''}`} />
             </button>
@@ -62,7 +76,16 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
                 <div className="user-dropdown__menu">
                     <div className="user-dropdown__header">
                         <div className="user-dropdown__header-avatar">
-                            {userInitials}
+                            {userAvatarUrl && !avatarFailed ? (
+                                <img
+                                    src={userAvatarUrl}
+                                    alt={userName}
+                                    className="user-dropdown__avatar-image"
+                                    onError={() => setAvatarFailed(true)}
+                                />
+                            ) : (
+                                userInitials
+                            )}
                         </div>
                         <div className="user-dropdown__header-info">
                             <div className="user-dropdown__header-name">{userName}</div>

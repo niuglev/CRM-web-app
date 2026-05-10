@@ -5,7 +5,6 @@
   --header-border: #e5e7eb;
   --header-text: #1f2937;
   --header-accent: #2563eb;
-  --header-notification-badge: #ef4444;
 }
 
 .header {
@@ -170,61 +169,6 @@
   }
 }
 
-.header__notification {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: none;
-  border: none;
-  border-radius: 10px;
-  color: var(--header-text);
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.05);
-    transform: translateY(-1px);
-  }
-
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-  }
-
-  &-badge {
-    position: absolute;
-    top: -2px;
-    right: -2px;
-    min-width: 18px;
-    height: 18px;
-    padding: 0 4px;
-    background: var(--header-notification-badge);
-    color: white;
-    font-size: 10px;
-    font-weight: 600;
-    border-radius: 9px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: badgePulse 2s infinite;
-  }
-}
-
-@keyframes badgePulse {
-
-  0%,
-  100% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.1);
-  }
-}
-
 .header__user-dropdown {
   position: relative;
   z-index: 1001;
@@ -281,10 +225,6 @@
     &::placeholder {
       color: #9ca3af;
     }
-  }
-
-  .header__notification:hover {
-    background: rgba(255, 255, 255, 0.1);
   }
 
   .header__menu-toggle:hover {

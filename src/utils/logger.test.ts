@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { logger } from './logger';
 
 describe('Frontend Logger Utility', () => {
-    let fetchMock: any;
-    const originalFetch = global.fetch;
+    const originalFetch = globalThis.fetch;
+    let fetchMock: ReturnType<typeof vi.fn>;
 
     beforeEach(() => {
         // Mock fetch
@@ -11,7 +11,7 @@ describe('Frontend Logger Utility', () => {
             ok: true,
             json: async () => ({ status: 'success' })
         });
-        global.fetch = fetchMock;
+        globalThis.fetch = fetchMock as unknown as typeof fetch;
 
         // Mock localStorage
         vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => {
@@ -26,7 +26,7 @@ describe('Frontend Logger Utility', () => {
     });
 
     afterEach(() => {
-        global.fetch = originalFetch;
+        globalThis.fetch = originalFetch;
         vi.restoreAllMocks();
     });
 
@@ -55,7 +55,7 @@ describe('Frontend Logger Utility', () => {
         await logger.error('Test error message');
 
         expect(fetchMock).toHaveBeenCalledTimes(1);
-        const [url, options] = fetchMock.mock.calls[0];
+        const [, options] = fetchMock.mock.calls[0];
 
         const body = JSON.parse(options.body);
         expect(body.level).toBe('error');

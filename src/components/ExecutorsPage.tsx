@@ -2,8 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import BottomNavigation from './BottomNavigation';
-import ExecutorsTable from './ExecutorsTable';
-import ExecutorsTableMobile from './ExecutorsTableMobile';
 import OrdersTable from './OrdersTable';
 import OrdersTableMobile from './OrdersTableMobile';
 import ClientsTable from './ClientsTable';
@@ -13,28 +11,41 @@ import type { Executor, Client, Order, User } from '../types';
 import { dataApi } from '../api/services';
 import { authApi } from '../api/auth';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import './ExecutorsPage.scss';
 
 import AddClientModal from './AddClientModal';
-import AddExecutorModal from './AddExecutorModal';
 import AddOrderModal from './AddOrderModal';
+import AdminUserManagement from './AdminUserManagement';
+import TableSettingsPage from './TableSettingsPage';
+import { defaultTableViewSettings, mapSettingsToView, type TableViewSettings } from './tableViewSettings';
+import FinancePage from './FinancePage';
+
+type HttpError = {
+  response?: {
+    data?: unknown;
+  };
+  message?: string;
+};
 
 const MainPage: React.FC = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const isMobile = useMobile(768);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
-  const [activeMenuItem, setActiveMenuItem] = useState<string>('executors');
+  const [activeMenuItem, setActiveMenuItem] = useState<string>('admin-users');
   const mainContentRef = useRef<HTMLElement>(null);
   const lastScrollY = useRef(0);
 
   // Состояние редактирования
   const [editingClient, setEditingClient] = useState<Client | null>(null);
-  const [editingExecutor, setEditingExecutor] = useState<Executor | null>(null);
   const [editingOrder, setEditingOrder] = useState<Order | null>(null);
 
   // Текущий пользователь
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [tableViewSettings, setTableViewSettings] = useState<TableViewSettings>(defaultTableViewSettings);
+  const apiBase = (import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1').replace(/\/api\/v1\/?$/, '');
 
   // Реальные данные исполнителей
   const [executors, setExecutors] = useState<Executor[]>(() => {
@@ -64,14 +75,39 @@ const MainPage: React.FC = () => {
     localStorage.setItem('crm_orders', JSON.stringify(orders));
   }, [orders]);
 
+  useEffect(() => {
+    if (!currentUser?.id) {
+      setTableViewSettings(defaultTableViewSettings);
+      return;
+    }
+    const key = `crm_table_settings_${currentUser.id}`;
+    const raw = localStorage.getItem(key);
+    if (!raw) {
+      setTableViewSettings(defaultTableViewSettings);
+      return;
+    }
+    try {
+      const parsed = JSON.parse(raw) as Array<{ id: string; enabled: boolean; titleKey: string }>;
+      setTableViewSettings(mapSettingsToView(parsed));
+    } catch {
+      setTableViewSettings(defaultTableViewSettings);
+    }
+  }, [currentUser?.id]);
+
   // Загрузка данных с бэкенда при монтировании компонента
   useEffect(() => {
     const fetchData = async () => {
       try {
         const user = await authApi.getMe();
+        const avatarUrl = user.avatar_url
+          ? (user.avatar_url.startsWith('http') ? user.avatar_url : `${apiBase}${user.avatar_url}`)
+          : null;
         setCurrentUser({
-          name: user.full_name || user.username || 'Пользователь',
-          initials: (user.full_name || user.username || 'U').substring(0, 2).toUpperCase()
+          id: String(user.id),
+          name: user.full_name || user.username || t('profile.defaultName'),
+          initials: (user.full_name || user.username || 'U').substring(0, 2).toUpperCase(),
+          avatarUrl,
+          isSuperuser: Boolean(user.is_superuser),
         });
       } catch (err) {
         console.error("Error fetching current user:", err);
@@ -104,30 +140,14 @@ const MainPage: React.FC = () => {
           const backendIds = new Set(fetchedExecutors.map((e: Executor) => e.id));
           return [...fetchedExecutors, ...localItems.filter((e: Executor) => !backendIds.has(e.id))];
         });
-      } catch (err: any) {
+      } catch (err: unknown) {
         // Ошибка 403 означает, что мы не суперюзер - игнорируем ошибку и оставляем список пустым
-        console.log("Not a superuser or unable to fetch executors", err?.response?.data || err.message);
+        const httpError = err as HttpError;
+        console.log("Not a superuser or unable to fetch executors", httpError.response?.data || httpError.message);
       }
     };
     fetchData();
-  }, []);
-
-  const handleEditExecutor = (executor: Executor) => {
-    setEditingExecutor(executor);
-    // Modal will be opened internally by the table using its own state,
-    // but we can also manage it here in a real app. Let's assume the table modals
-    // handle their own "isAddModalOpen" but we can't easily force it open from here
-    // without lifting `isAddModalOpen` state up.
-    // Ah, wait! The tables have their own `isAddModalOpen`. If we click Edit, the table
-    // does not open the modal directly! So the edit button click currently does NOT open the modal.
-    // Let's change the pattern: we will lift the modal state up to the page level.
-  };
-
-  const handleDeleteExecutor = (executor: Executor) => {
-    if (window.confirm(`Вы уверены, что хотите удалить исполнителя ${executor.name}?`)) {
-      setExecutors(prev => prev.filter(e => e.id !== executor.id));
-    }
-  };
+  }, [t]);
 
   const handleEditClient = (client: Client) => {
     setEditingClient(client);
@@ -169,19 +189,6 @@ const MainPage: React.FC = () => {
     return `${prefix}${timestamp}-${random}`;
   };
 
-  const handleAddExecutor = async (executorData: Omit<Executor, 'id'>) => {
-    if (editingExecutor) {
-      setExecutors(prev => prev.map(e => e.id === editingExecutor.id ? { ...executorData, id: editingExecutor.id } : e));
-      setEditingExecutor(null);
-    } else {
-      const newExecutor: Executor = {
-        ...executorData,
-        id: generateId('exec-'),
-      };
-      setExecutors(prev => [...prev, newExecutor]);
-    }
-  };
-
   const handleAddClient = async (clientData: Omit<Client, 'id'>) => {
     if (editingClient) {
       const updatedClient = { ...clientData, id: editingClient.id } as Client;
@@ -220,9 +227,17 @@ const MainPage: React.FC = () => {
   const handleAddOrder = async (orderData: Omit<Order, 'id'> & { customerContacts?: string; executorContacts?: string }) => {
     if (editingOrder) {
       // Editing Mode
-      const updatedOrder = { ...orderData, id: editingOrder.id } as Order;
-      delete (updatedOrder as any).customerContacts;
-      delete (updatedOrder as any).executorContacts;
+      const updatedOrder: Order = {
+        id: editingOrder.id,
+        date: orderData.date,
+        time: orderData.time,
+        customerId: orderData.customerId,
+        customerName: orderData.customerName,
+        description: orderData.description,
+        address: orderData.address,
+        executorId: orderData.executorId,
+        executorName: orderData.executorName,
+      };
       setOrders(prev => prev.map(o => o.id === editingOrder.id ? updatedOrder : o));
       setEditingOrder(null);
 
@@ -238,7 +253,7 @@ const MainPage: React.FC = () => {
 
     // Add Mode
     let finalCustomerId = orderData.customerId;
-    let finalCustomerName = orderData.customerName;
+    const finalCustomerName = orderData.customerName;
 
     if (finalCustomerId === 'auto' || !finalCustomerId) {
       const newClientData = {
@@ -269,7 +284,7 @@ const MainPage: React.FC = () => {
     }
 
     let finalExecutorId = orderData.executorId;
-    let finalExecutorName = orderData.executorName;
+    const finalExecutorName = orderData.executorName;
 
     if ((finalExecutorId === 'auto' || !finalExecutorId) && finalExecutorName && finalExecutorName !== 'Не назначен') {
       const newExecutorData = {
@@ -365,9 +380,11 @@ const MainPage: React.FC = () => {
   return (
     <div className={`executors-page ${isMobile ? 'executors-page--mobile' : ''}`}>
       <Header
-        userName={currentUser?.name || "Пользователь"}
+        userName={currentUser?.name || t('profile.defaultName')}
         userInitials={currentUser?.initials || "ПУ"}
+        userAvatarUrl={currentUser?.avatarUrl || null}
         isVisible={isMobile ? true : isHeaderVisible}
+        onProfileClick={() => navigate('/profile')}
         onLogoutClick={handleLogout}
       />
       <div className="executors-page__layout">
@@ -378,6 +395,7 @@ const MainPage: React.FC = () => {
             onToggle={toggleSidebar}
             onMenuItemClick={handleMenuItemClick}
             ordersCount={orders.length}
+            isAdmin={Boolean(currentUser?.isSuperuser)}
           />
         )}
         <main
@@ -401,6 +419,9 @@ const MainPage: React.FC = () => {
                   onView={() => { }}
                   onDelete={handleDeleteClient}
                   onAddClient={handleAddClient}
+                  showContacts={tableViewSettings.showContacts}
+                  compactMode={tableViewSettings.compactMode}
+                  stickyHeader={tableViewSettings.stickyHeader}
                 />
               )}
             </>
@@ -423,29 +444,26 @@ const MainPage: React.FC = () => {
                   onAddOrder={handleAddOrder}
                   onEdit={handleEditOrder}
                   onDelete={handleDeleteOrder}
+                  compactMode={tableViewSettings.compactMode}
+                  stickyHeader={tableViewSettings.stickyHeader}
                 />
               )}
             </>
-          ) : activeMenuItem === 'executors' ? (
-            <>
-              {isMobile ? (
-                <ExecutorsTableMobile
-                  executors={executors}
-                  onEdit={handleEditExecutor}
-                  onView={() => { }}
-                  onDelete={handleDeleteExecutor}
-                  onAddExecutor={handleAddExecutor}
-                />
-              ) : (
-                <ExecutorsTable
-                  executors={executors}
-                  onEdit={handleEditExecutor}
-                  onView={() => { }}
-                  onDelete={handleDeleteExecutor}
-                  onAddExecutor={handleAddExecutor}
-                />
-              )}
-            </>
+          ) : activeMenuItem === 'admin-users' ? (
+            <AdminUserManagement
+              isSuperuser={Boolean(currentUser?.isSuperuser)}
+              showEmail={tableViewSettings.showEmail}
+              showContacts={tableViewSettings.showContacts}
+              compactMode={tableViewSettings.compactMode}
+              stickyHeader={tableViewSettings.stickyHeader}
+            />
+          ) : activeMenuItem === 'table-settings' ? (
+            <TableSettingsPage
+              userId={currentUser?.id || 'anonymous'}
+              onSettingsChange={(next) => setTableViewSettings(next)}
+            />
+          ) : activeMenuItem === 'finance' && currentUser?.isSuperuser ? (
+            <FinancePage />
           ) : null}
         </main>
       </div>
@@ -456,14 +474,6 @@ const MainPage: React.FC = () => {
           onClose={() => setEditingClient(null)}
           onSubmit={handleAddClient}
           initialData={editingClient}
-        />
-      )}
-      {editingExecutor && (
-        <AddExecutorModal
-          isOpen={true}
-          onClose={() => setEditingExecutor(null)}
-          onSubmit={handleAddExecutor}
-          initialData={editingExecutor}
         />
       )}
       {editingOrder && (
@@ -481,6 +491,7 @@ const MainPage: React.FC = () => {
           activeItem={activeMenuItem}
           onMenuItemClick={handleMenuItemClick}
           ordersCount={orders.length}
+          isAdmin={Boolean(currentUser?.isSuperuser)}
         />
       )}
       <div className="executors-page__decoration">

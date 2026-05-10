@@ -51,7 +51,7 @@ const AddExecutorModal: React.FC<AddExecutorModalProps> = ({ isOpen, onClose, on
             return t('contactsTooShort'); // можно использовать тот же ключ, что и для клиента
         }
 
-        const phoneRegex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}$/;
+        const phoneRegex = /^[+]?\(?[0-9]{1,4}\)?[-\s.]?\(?[0-9]{1,4}\)?[-\s.]?[0-9]{1,9}$/;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const messengerRegex = /^(tg\.|@|wa\(|wa\.|viber\.|telegram\.)/i;
 

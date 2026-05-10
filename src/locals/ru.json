@@ -1,5 +1,4 @@
 {
-  "systemReload": "Перезагрузка системы",
   "closeMenu": "Закрыть меню",
   "openMenu": "Открыть меню",
   "searchPlaceholder": "Поиск...",
@@ -15,10 +14,6 @@
     "settings": "Настройки",
     "statistics": "Статистика",
     "logout": "Выйти"
-  },
-  "header": {
-    "notifications": "Уведомления",
-    "new": "новых"
   },
   "login": {
     "defaultName": "Без имени",

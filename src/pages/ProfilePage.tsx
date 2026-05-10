@@ -5,25 +5,39 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 import { apiClient } from '../api/client';
 import './ProfilePage.scss';
 
+interface UserProfileResponse {
+  full_name?: string | null;
+  email?: string | null;
+  avatar_url?: string | null;
+}
+
 const ProfilePage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [fullName, setFullName] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const resolveAvatarUrl = (rawUrl?: string | null): string | null => {
+    if (!rawUrl) return null;
+    if (rawUrl.startsWith('http://') || rawUrl.startsWith('https://')) return rawUrl;
+    const apiBase = apiClient.defaults.baseURL || '';
+    const origin = apiBase.replace(/\/api\/v1\/?$/, '');
+    return `${origin}${rawUrl.startsWith('/') ? rawUrl : `/${rawUrl}`}`;
+  };
 
   // Загружаем текущий аватар при монтировании
   useEffect(() => {
     const fetchAvatar = async () => {
       try {
-        const response = await apiClient.get('/users/me/avatar', {
-          responseType: 'blob', // чтобы получить изображение
-        });
-        const url = URL.createObjectURL(response.data);
-        setAvatarUrl(url);
+        const response = await apiClient.get<UserProfileResponse>('/users/me');
+        setAvatarUrl(resolveAvatarUrl(response.data.avatar_url));
+        setFullName(response.data.full_name ?? null);
+        setEmail(response.data.email ?? null);
       } catch (err) {
-        // Если 404 – аватара нет, ничего страшного
-        console.log('No avatar');
+        console.error('Failed to fetch profile', err);
       }
     };
     fetchAvatar();
@@ -42,13 +56,10 @@ const ProfilePage = () => {
     formData.append('file', file);
     setLoading(true);
     try {
-      await apiClient.post('/users/me/avatar', formData, {
+      const response = await apiClient.post<UserProfileResponse>('/users/me/avatar', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      // После загрузки обновляем аватар
-      const response = await apiClient.get('/users/me/avatar', { responseType: 'blob' });
-      const url = URL.createObjectURL(response.data);
-      setAvatarUrl(url);
+      setAvatarUrl(resolveAvatarUrl(response.data.avatar_url));
     } catch (err) {
       console.error('Upload failed', err);
       alert('Ошибка загрузки аватара');
@@ -61,8 +72,8 @@ const ProfilePage = () => {
     if (!avatarUrl) return;
     setLoading(true);
     try {
-      await apiClient.delete('/users/me/avatar');
-      setAvatarUrl(null);
+      const response = await apiClient.delete<UserProfileResponse>('/users/me/avatar');
+      setAvatarUrl(resolveAvatarUrl(response.data.avatar_url));
     } catch (err) {
       console.error('Delete failed', err);
       alert('Ошибка удаления аватара');
@@ -81,7 +92,7 @@ const ProfilePage = () => {
 
         <div className="profile-page__avatar">
           {avatarUrl ? (
-            <img src={avatarUrl} alt="Avatar" className="avatar-img" />
+            <img src={avatarUrl} alt="Avatar" className="avatar-img" onError={() => setAvatarUrl(null)} />
           ) : (
             <div className="avatar-placeholder">👤</div>
           )}
@@ -94,18 +105,20 @@ const ProfilePage = () => {
               onChange={handleAvatarUpload}
             />
             <button onClick={() => fileInputRef.current?.click()} disabled={loading}>
-              {loading ? 'Загрузка...' : 'Загрузить аватар'}
+              {loading ? t('common.loading') : t('profile.uploadAvatar')}
             </button>
             {avatarUrl && (
               <button onClick={handleAvatarDelete} disabled={loading}>
-                Удалить
+                {t('common.delete')}
               </button>
             )}
           </div>
         </div>
 
-        <p>{t('profile.name')}: Никита (заглушка)</p>
-        <p>Email: test@example.com</p>
+        <div className="profile-page__meta">
+          <p>{t('profile.name')}: {fullName || t('profile.notSpecified')}</p>
+          <p>Email: {email || t('profile.notSpecified')}</p>
+        </div>
 
         <LanguageSwitcher />
 

@@ -12,9 +12,20 @@ interface OrdersTableProps {
     onAddOrder?: (order: Omit<Order, 'id'>) => void;
     onEdit: (order: Order) => void;
     onDelete: (order: Order) => void;
+    compactMode?: boolean;
+    stickyHeader?: boolean;
 }
 
-const OrdersTable: React.FC<OrdersTableProps> = ({ orders, clients = [], executors = [], onAddOrder, onEdit, onDelete }) => {
+const OrdersTable: React.FC<OrdersTableProps> = ({
+    orders,
+    clients = [],
+    executors = [],
+    onAddOrder,
+    onEdit,
+    onDelete,
+    compactMode = false,
+    stickyHeader = true,
+}) => {
     const { t } = useTranslation();
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedOrder, setSelectedOrder] = useState<string | null>(orders[0]?.id ?? null);
@@ -43,7 +54,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ orders, clients = [], executo
     }, [orders, searchQuery]);
 
     return (
-        <div className="orders-table">
+        <div className={`orders-table ${compactMode ? 'orders-table--compact' : ''} ${stickyHeader ? 'orders-table--sticky-header' : ''}`}>
             <div className="orders-table__header">
                 <div>
                     <h1 className="orders-table__title">{t('orders.title')}</h1>

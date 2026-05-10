@@ -1,5 +1,4 @@
 {
-  "systemReload": "System Reload",
   "closeMenu": "Close Menu",
   "openMenu": "Open Menu",
   "searchPlaceholder": "Search...",
@@ -15,10 +14,6 @@
     "settings": "Settings",
     "statistics": "Statistics",
     "logout": "Log Out"
-  },
-  "header": {
-    "notifications": "Notifications",
-    "new": "new"
   },
   "login": {
     "defaultName": "No name",

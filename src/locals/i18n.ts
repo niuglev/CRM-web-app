@@ -8,11 +8,8 @@ const resources = {
         translation: {
             searchPlaceholder: "Find a client or order...",
             searchAriaLabel: "Search clients and orders",
-            notificationsWithCount: "Notifications ({{count}} new)",
-            systemUpdated: "The system has been updated",
             openMenu: "Open menu",
             closeMenu: "Close menu",
-            systemReload: "System Reload",
             header_search_input: "Search clients or something else...",
             addClientTitle: "Add client",
             editClientTitle: "Edit client",
@@ -70,7 +67,79 @@ const resources = {
                 executors: "Executors",
                 orders: "Orders",
                 statistics: "Statistics",
-                settings: "Settings"
+                settings: "Settings",
+                adminUsers: "User Management",
+                tableSettings: "Table Settings",
+                finance: "Finance"
+            },
+            admin: {
+                userFallback: "User",
+                logs: {
+                    fetchUsersFailed: "Failed to fetch users for admin view"
+                },
+                userManagement: {
+                    title: "User Management",
+                    subtitleAll: "Managers and executors",
+                    subtitleExecutors: "Executors",
+                    emptyAll: "No personnel found",
+                    filters: {
+                        all: "All",
+                        managers: "Managers",
+                        executors: "Executors"
+                    },
+                    table: {
+                        name: "NAME",
+                        role: "ROLE",
+                        email: "EMAIL",
+                        emailOrContacts: "EMAIL / CONTACTS",
+                        contacts: "CONTACTS",
+                        rate: "COMMISSION RATE",
+                        actions: "ACTIONS"
+                    },
+                    roles: {
+                        manager: "Manager",
+                        executor: "Executor"
+                    },
+                    form: {
+                        name: "Name",
+                        email: "Email",
+                        contacts: "Contacts",
+                        rate: "Commission rate, %"
+                    },
+                    managers: {
+                        title: "Managers",
+                        add: "Add Manager",
+                        empty: "No managers yet",
+                        addModalTitle: "Add Manager",
+                        editModalTitle: "Edit Manager"
+                    },
+                    executors: {
+                        title: "Executors",
+                        add: "Add Executor",
+                        empty: "No executors yet",
+                        addModalTitle: "Add Executor",
+                        editModalTitle: "Edit Executor"
+                    }
+                },
+                tableSettings: {
+                    title: "Table Settings",
+                    resetButton: "Reset my settings",
+                    options: {
+                        showEmail: "Show Email in tables",
+                        showContacts: "Show contacts in tables",
+                        compactMode: "Compact table mode",
+                        stickyHeader: "Sticky table header"
+                    }
+                },
+                finance: {
+                    title: "Finance",
+                    cards: {
+                        revenue: "Revenue this month",
+                        managersPayout: "Manager payouts",
+                        executorsPayout: "Executor payouts"
+                    },
+                    hint: "Administrative calculation section. Final formulas and backend integration come next."
+                }
             },
             clients: {
                 title: "Clients",
@@ -93,7 +162,8 @@ const resources = {
                 edit: "Edit",
                 view: "View",
                 delete: "Delete",
-                back: "Back"
+                back: "Back",
+                loading: "Loading..."
             },
             executors: {
                 title: "Executors",
@@ -133,6 +203,10 @@ const resources = {
             },
             profile: {
                 title: "Profile",
+                name: "Name",
+                defaultName: "User",
+                uploadAvatar: "Upload avatar",
+                notSpecified: "Not specified",
                 changePassword: "Change password",
                 logout: "Log out"
             },
@@ -151,11 +225,8 @@ const resources = {
         translation: {
             searchPlaceholder: "Найдите клиента или заказ...",
             searchAriaLabel: "Поиск клиентов и заказов",
-            notificationsWithCount: "Уведомления ({{count}} новых)",
-            systemUpdated: "Система была обновлена",
             openMenu: "Открыть меню",
             closeMenu: "Закрыть меню",
-            systemReload: "Система была обновлена",
             header_search_input: "Поиск клиентов и заказов",
             addClientTitle: "Добавить клиента",
             editClientTitle: "Редактировать клиента",
@@ -213,7 +284,79 @@ const resources = {
                 executors: "Исполнители",
                 orders: "Заказы",
                 statistics: "Статистика",
-                settings: "Настройки"
+                settings: "Настройки",
+                adminUsers: "Управление пользователями",
+                tableSettings: "Настройки таблиц",
+                finance: "Финансы"
+            },
+            admin: {
+                userFallback: "Пользователь",
+                logs: {
+                    fetchUsersFailed: "Не удалось получить пользователей для админ-раздела"
+                },
+                userManagement: {
+                    title: "Управление пользователями",
+                    subtitleAll: "Менеджеры и исполнители",
+                    subtitleExecutors: "Исполнители",
+                    emptyAll: "Персонал не найден",
+                    filters: {
+                        all: "Все",
+                        managers: "Менеджеры",
+                        executors: "Исполнители"
+                    },
+                    table: {
+                        name: "ИМЯ",
+                        role: "РОЛЬ",
+                        email: "EMAIL",
+                        emailOrContacts: "EMAIL / КОНТАКТЫ",
+                        contacts: "КОНТАКТЫ",
+                        rate: "ПРОЦЕНТНАЯ СТАВКА",
+                        actions: "ДЕЙСТВИЯ"
+                    },
+                    roles: {
+                        manager: "Менеджер",
+                        executor: "Исполнитель"
+                    },
+                    form: {
+                        name: "Имя",
+                        email: "Email",
+                        contacts: "Контакты",
+                        rate: "Процентная ставка, %"
+                    },
+                    managers: {
+                        title: "Менеджеры",
+                        add: "Добавить менеджера",
+                        empty: "Менеджеры пока не добавлены",
+                        addModalTitle: "Добавить менеджера",
+                        editModalTitle: "Редактировать менеджера"
+                    },
+                    executors: {
+                        title: "Исполнители",
+                        add: "Добавить исполнителя",
+                        empty: "Исполнители пока не добавлены",
+                        addModalTitle: "Добавить исполнителя",
+                        editModalTitle: "Редактировать исполнителя"
+                    }
+                },
+                tableSettings: {
+                    title: "Настройки таблиц",
+                    resetButton: "Сбросить мои настройки",
+                    options: {
+                        showEmail: "Показывать Email в таблицах",
+                        showContacts: "Показывать контакты в таблицах",
+                        compactMode: "Компактный режим таблиц",
+                        stickyHeader: "Фиксировать заголовок таблиц"
+                    }
+                },
+                finance: {
+                    title: "Финансы",
+                    cards: {
+                        revenue: "Доход за месяц",
+                        managersPayout: "Выплаты менеджерам",
+                        executorsPayout: "Выплаты исполнителям"
+                    },
+                    hint: "Раздел для административных расчетов. Финальные формулы и интеграция с бэком подключаются следующим этапом."
+                }
             },
             clients: {
                 title: "Клиенты",
@@ -236,7 +379,8 @@ const resources = {
                 edit: "Редактировать",
                 view: "Просмотр",
                 delete: "Удалить",
-                back: "Назад"
+                back: "Назад",
+                loading: "Загрузка..."
             },
             executors: {
                 title: "Исполнители",
@@ -276,6 +420,10 @@ const resources = {
             },
             profile: {
                 title: "Профиль",
+                name: "Имя",
+                defaultName: "Пользователь",
+                uploadAvatar: "Загрузить аватар",
+                notSpecified: "Не указано",
                 changePassword: "Сменить пароль",
                 logout: "Выйти"
             },

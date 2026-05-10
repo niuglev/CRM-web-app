@@ -11,9 +11,21 @@ interface ClientsTableProps {
     onView: (client: Client) => void;
     onDelete: (client: Client) => void;
     onAddClient?: (client: Omit<Client, 'id'>) => void;
+    showContacts?: boolean;
+    compactMode?: boolean;
+    stickyHeader?: boolean;
 }
 
-const ClientsTable: React.FC<ClientsTableProps> = ({ clients, onEdit, onView, onDelete, onAddClient }) => {
+const ClientsTable: React.FC<ClientsTableProps> = ({
+    clients,
+    onEdit,
+    onView,
+    onDelete,
+    onAddClient,
+    showContacts = true,
+    compactMode = false,
+    stickyHeader = true,
+}) => {
     const { t } = useTranslation();
     const [selectedFilter, setSelectedFilter] = useState<'corporate' | 'private'>('corporate');
     const [searchQuery, setSearchQuery] = useState('');
@@ -38,7 +50,7 @@ const ClientsTable: React.FC<ClientsTableProps> = ({ clients, onEdit, onView, on
     });
 
     return (
-        <div className="clients-table">
+        <div className={`clients-table ${compactMode ? 'clients-table--compact' : ''} ${stickyHeader ? 'clients-table--sticky-header' : ''}`}>
             <div className="clients-table__header">
                 <h1 className="clients-table__title">{t('clients.title')}</h1>
                 <div className="clients-table__header-actions">
@@ -82,7 +94,7 @@ const ClientsTable: React.FC<ClientsTableProps> = ({ clients, onEdit, onView, on
                     <thead>
                         <tr className="clients-table__header-row">
                             <th className="clients-table__header-cell">{t('clients.table.nameId')}</th>
-                            <th className="clients-table__header-cell">{t('clients.table.contacts')}</th>
+                            {showContacts && <th className="clients-table__header-cell">{t('clients.table.contacts')}</th>}
                             <th className="clients-table__header-cell">{t('clients.table.comments')}</th>
                             <th className="clients-table__header-cell clients-table__header-cell--actions">{t('clients.table.actions')}</th>
                         </tr>
@@ -90,7 +102,7 @@ const ClientsTable: React.FC<ClientsTableProps> = ({ clients, onEdit, onView, on
                     <tbody>
                         {filteredClients.length === 0 ? (
                             <tr>
-                                <td colSpan={4} className="clients-table__empty">
+                                <td colSpan={showContacts ? 4 : 3} className="clients-table__empty">
                                     <div className="clients-table__empty-message">
                                         {t('clients.noClients')}
                                     </div>
@@ -109,9 +121,11 @@ const ClientsTable: React.FC<ClientsTableProps> = ({ clients, onEdit, onView, on
                                             <div className="clients-table__name-id">id-{client.id}</div>
                                         </div>
                                     </td>
-                                    <td className="clients-table__cell">
-                                        <div className="clients-table__contacts">{client.contacts}</div>
-                                    </td>
+                                    {showContacts && (
+                                        <td className="clients-table__cell">
+                                            <div className="clients-table__contacts">{client.contacts}</div>
+                                        </td>
+                                    )}
                                     <td className="clients-table__cell">
                                         <div className="clients-table__comments" title={client.comments}>
                                             {client.comments}
